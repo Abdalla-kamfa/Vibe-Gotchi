@@ -306,12 +306,12 @@ export function PetSprite({ stage, colors, accessories }: PetSpriteProps) {
       className="flex items-center justify-center"
     >
       <motion.div
-        animate={{ y: [0, -14, 0], scaleX: [1, 1.04, 1], scaleY: [1, 0.96, 1] }}
+        animate={{ y: [0, -18, 0], scaleX: [1, 1.04, 1], scaleY: [1, 0.96, 1] }}
         transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
       >
         <svg
-          width="200"
-          height="200"
+          width="280"
+          height="280"
           viewBox="0 0 200 200"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"

@@ -88,7 +88,11 @@ export function StatsPanel({
 
       <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-2.5 sm:p-3 flex flex-col gap-1.5">
         <span className="font-pixel text-[8px] text-white/50 tracking-wide">💬 Vibe</span>
-        <p className="text-sm text-white/80 leading-snug italic">"{vibeOneLiner}"</p>
+        <p className="text-sm leading-snug italic" style={{ color: "#7ec8a0" }}>
+          <span className="not-italic text-lg leading-none" style={{ color: "#4ade80", opacity: 0.5 }}>"</span>
+          {vibeOneLiner}
+          <span className="not-italic text-lg leading-none" style={{ color: "#4ade80", opacity: 0.5 }}>"</span>
+        </p>
         <span className="font-pixel text-[8px] text-[--neon-green] tracking-wide mt-0.5">{petPersonality}</span>
       </div>
     </motion.div>

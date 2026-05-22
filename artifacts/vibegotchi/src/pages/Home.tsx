@@ -28,19 +28,24 @@ const STARS = Array.from({ length: 48 }, (_, i) => ({
   dur: 2 + (i * 0.31) % 3,
 }));
 
-function StarField() {
+function BackgroundEffects() {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-      {STARS.map((s) => (
-        <motion.div
-          key={s.id}
-          className="absolute rounded-full bg-white"
-          style={{ left: `${s.x}%`, top: `${s.y}%`, width: s.size, height: s.size }}
-          animate={{ opacity: [0.1, 0.7, 0.1] }}
-          transition={{ duration: s.dur, repeat: Infinity, delay: s.delay, ease: "easeInOut" }}
-        />
-      ))}
-    </div>
+    <>
+      {/* Twinkling stars */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        {STARS.map((s) => (
+          <motion.div
+            key={s.id}
+            className="absolute rounded-full bg-white"
+            style={{ left: `${s.x}%`, top: `${s.y}%`, width: s.size, height: s.size }}
+            animate={{ opacity: [0.1, 0.7, 0.1] }}
+            transition={{ duration: s.dur, repeat: Infinity, delay: s.delay, ease: "easeInOut" }}
+          />
+        ))}
+      </div>
+      {/* CRT scanline overlay */}
+      <div className="scanlines fixed inset-0 pointer-events-none z-10" aria-hidden="true" />
+    </>
   );
 }
 
@@ -117,7 +122,7 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen bg-space flex flex-col items-center px-4 py-4 sm:py-8">
-      <StarField />
+      <BackgroundEffects />
 
       {/* Header */}
       <motion.div
@@ -234,13 +239,18 @@ export default function Home() {
               className="text-center"
             >
               <h2 className="text-lg font-semibold text-white">{petData.username}</h2>
-              <p className="font-pixel text-[9px] text-white/40 mt-1 tracking-widest uppercase">{vibeResult.petPersonality}</p>
+              <p
+                className="font-pixel text-[9px] mt-1 tracking-widest uppercase"
+                style={{ color: "#c084fc", textShadow: "0 0 10px rgba(192,132,252,0.6), 0 0 24px rgba(147,51,234,0.35)" }}
+              >
+                {vibeResult.petPersonality}
+              </p>
             </motion.div>
 
             {/* Pet + Stats — stacked on mobile, side-by-side on lg */}
-            <div className="flex flex-col lg:flex-row gap-3 sm:gap-5 items-start">
-              {/* Pet column */}
-              <div className="flex flex-col items-center gap-2 sm:gap-3 w-full lg:w-auto lg:min-w-[220px]">
+            <div className="flex flex-col lg:flex-row gap-3 sm:gap-5 items-center lg:items-start">
+              {/* Pet column — equal flex-1, centered content */}
+              <div className="flex flex-col items-center gap-2 sm:gap-3 w-full lg:flex-1 lg:min-w-[260px]">
                 <PetSprite stage={stage} colors={colors} accessories={accessories} />
                 <MoodBadge emoji={mood.emoji} label={mood.label} tier={mood.tier} />
                 <div className="flex flex-col items-center gap-2">
@@ -255,8 +265,8 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Stats column */}
-              <div className="flex-1 w-full">
+              {/* Stats column — equal flex-1 */}
+              <div className="w-full lg:flex-1">
                 <StatsPanel
                   healthPercent={healthPercent}
                   energyPercent={energyPercent}
