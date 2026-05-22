@@ -1,0 +1,227 @@
+You are building VibeGotchi — a premium consumer webapp where developers paste a public GitHub username and a living virtual pet appears that reacts to their coding activity. The pet evolves, gains stats, changes mood, and unlocks outfits based on real GitHub data. This must feel like a polished, launch-ready product — not a hackathon prototype.
+
+STACK
+
+Framework: Next.js 14 with App Router
+Styling: Tailwind CSS + Framer Motion for all animations
+Data: GitHub Public REST API (no auth required, use public endpoints only)
+AI: OpenAI GPT-4o-mini via API — mood analysis from recent commit messages
+State: React useState/useEffect + localStorage for session leaderboard
+Deployment: Must run cleanly on Replit with a single npm run dev command
+
+
+PAGES & ROUTES
+/ — Home (main experience)
+/leaderboard — Session leaderboard of all pets viewed
+
+PAGE 1: HOME /
+Hero Section
+
+Full-viewport dark background — use deep space gradient: #0a0a0f to #0d1117
+Centered layout, mobile-first (max-width 420px on mobile, 640px on desktop)
+Large glowing title: "VibeGotchi" — white text, subtle purple/green glow, pixel-style font (use Google Font: Press Start 2P)
+Tagline below: "Your GitHub commits. Your creature. Don't let it die." — small, muted gray
+Input field: large, rounded, dark bg, neon green border on focus — placeholder: Enter any GitHub username...
+Big CTA button: "Summon My Pet" — neon green background, black text, hover scale animation, rounded-xl
+Below button: small ghost text "No login required. Any public GitHub username works."
+
+Loading State (after submit)
+
+Hide the input section
+Show a centered animated pixel egg sprite (CSS animation, cracking/pulsing)
+Text below: "Reading your commits... summoning your creature..."
+Egg shakes more intensely as it loads
+Use a skeleton shimmer on the stats area beneath
+
+Pet Display Section (after data loads)
+This is the hero moment. Layout:
+Left/Top — Pet Sprite Area:
+
+Large animated pet sprite rendered via CSS/SVG — NOT a static image
+Pet must have idle animation (bobbing up and down, breathing)
+Pet appearance changes based on petStage: egg / baby / teen / adult / legend
+Pet has animated eyes that blink every 3-4 seconds
+Pet color palette shifts based on top programming language:
+
+Python → purple hues
+JavaScript/TypeScript → yellow hues
+Rust → orange/red hues
+Go → cyan hues
+Default → green hues
+
+
+
+Pet Stage Logic (based on commit count in last 30 days):
+
+0 commits → egg (grey, cracked, sad eyes)
+1–5 commits → baby (small, wobbly, curious eyes)
+6–20 commits → teen (medium, energetic, determined eyes)
+21–50 commits → adult (full size, confident, glowing)
+51+ commits → legend (max size, golden glow, crown, particle effects)
+
+Mood System (shown as emoji + label beneath pet):
+
+Determined by days since last commit:
+
+0–1 days → 🔥 "In the zone"
+2–3 days → 😊 "Vibing"
+4–6 days → 😐 "Getting rusty"
+7–13 days → 😴 "Taking a long nap"
+14+ days → 💀 "Please help"
+
+
+Mood also influenced by OpenAI analysis of last 5 commit messages (see AI section below)
+
+Right/Bottom — Stats Panel:
+
+Styled like a retro RPG stat card — dark panel, pixel font for labels, regular font for values
+Stats to show:
+
+❤️ Health — progress bar, based on recency of last commit (full = today, empty = 14+ days ago)
+⚡ Energy — based on commits this week vs last week ratio
+🍕 Fed — total commits in last 30 days (commits = food)
+🔥 Streak — longest active streak in days (calculate from push events)
+🏆 Level — derived from total public repos + stars
+💬 Vibe — AI-generated one-line personality read (see AI section)
+
+
+
+Outfit/Accessory Unlocks (render as overlays on pet sprite):
+
+Python user → 🧙 Wizard hat overlay
+JavaScript user → 👑 Crown overlay
+Rust user → 🛡️ Shield overlay
+Has 10+ stars on any repo → ⭐ Star badge
+Committed today → 🔥 Fire aura animation
+0 commits in 14 days → 💀 Skull overlay with flickering effect
+
+Share Button:
+
+Below the pet: "Share My Pet" button
+On click: generate a shareable text string like:
+"My VibeGotchi is a Level 7 Adult with 🔥 In the Zone energy. See yours at vibegotchi.replit.app"
+Copy to clipboard + show "Copied! Go flex on your feed 💚" toast
+
+"View Leaderboard" link below share button.
+
+GITHUB DATA FETCHING
+Use these public GitHub API endpoints (no auth token needed for basic use, but add GITHUB_TOKEN env var support for higher rate limits):
+GET https://api.github.com/users/{username}
+GET https://api.github.com/users/{username}/events/public?per_page=100
+GET https://api.github.com/users/{username}/repos?sort=updated&per_page=30
+From this data, calculate:
+
+commitCount30Days — count PushEvents in last 30 days
+lastCommitDate — most recent PushEvent date
+currentStreak — consecutive days with at least one PushEvent
+topLanguage — most common language across repos
+totalStars — sum of stargazers_count across all repos
+recentCommitMessages — last 5 commit message strings from PushEvents
+totalRepos — public_repos from user object
+
+Handle errors gracefully:
+
+Username not found → friendly error state with sad egg and message: "This username doesn't exist... or they deleted everything out of shame."
+Rate limited → show: "GitHub is being shy. Try again in a moment."
+Empty activity → treat as 0 commits (show dead/sad pet state)
+
+
+AI INTEGRATION (OpenAI)
+Create a Next.js API route: POST /api/analyze-vibe
+Request body:
+json{
+  "commitMessages": ["fix bug", "add feature", "wip", "..."],
+  "topLanguage": "Python",
+  "commitCount": 23,
+  "daysSinceLastCommit": 1
+}
+System prompt to send to GPT-4o-mini:
+You are a witty, slightly sarcastic AI that analyzes a developer's GitHub commit history and gives their virtual pet a personality. Based on the commit messages, language, and activity provided, return ONLY a JSON object with these exact fields:
+{
+  "vibeOneLiner": "string (max 60 chars, punchy, funny, true to their coding style)",
+  "petPersonality": "string (one word: Chaotic | Disciplined | Sleepy | Feral | Legendary | Ghost)",
+  "moodBoost": "positive | neutral | negative"
+}
+No markdown. No explanation. JSON only.
+Use the vibeOneLiner as the Vibe stat in the stats panel.
+Use petPersonality as a subtitle under the pet name.
+Use moodBoost to slightly adjust the mood display.
+If OpenAI call fails, fall back to rule-based vibe strings — never show an error to the user.
+
+PAGE 2: LEADERBOARD /leaderboard
+
+Every time a pet is successfully loaded, save to localStorage:
+json{ "username": "torvalds", "stage": "legend", "level": 42, "mood": "🔥 In the zone", "timestamp": 1234567890 }
+
+Leaderboard page reads from localStorage and displays top 10 by level
+Layout: dark card list, each row shows:
+
+Rank number (styled like #1, #2)
+GitHub avatar (https://github.com/{username}.png)
+Username
+Pet stage badge (color-coded pill)
+Level number
+Mood emoji
+
+
+"Summon your own" CTA button at bottom linking back to /
+If localStorage is empty: show placeholder message "No pets summoned yet. Be the first."
+
+
+ANIMATIONS & POLISH
+All animations via Framer Motion:
+
+Page entrance: fade up, staggered children
+Pet entrance: scale from 0 → 1 with spring physics
+Stats bars: animate width from 0% to final value on mount
+Mood badge: pulse animation if mood is 🔥
+Legend stage: continuous golden particle effect around pet (use CSS keyframes)
+Skull overlay (dead pet): flicker/glitch CSS animation
+All buttons: scale(0.97) on press, scale(1.03) on hover
+
+
+COMPONENT STRUCTURE
+/app
+  /page.tsx              ← Home page
+  /leaderboard/page.tsx  ← Leaderboard
+  /api/analyze-vibe/route.ts  ← OpenAI API route
+/components
+  /PetSprite.tsx         ← Animated SVG/CSS pet, accepts stage + language + accessories
+  /StatsPanel.tsx        ← RPG-style stat card
+  /MoodBadge.tsx         ← Animated mood display
+  /ShareButton.tsx       ← Copy to clipboard + toast
+  /LoadingEgg.tsx        ← Animated loading state
+  /LeaderboardRow.tsx    ← Single leaderboard entry
+/lib
+  /github.ts             ← All GitHub API calls + data calculation
+  /petLogic.ts           ← Stage, mood, outfit, level calculation
+  /openai.ts             ← OpenAI API call + fallback logic
+
+ENV VARIABLES NEEDED
+OPENAI_API_KEY=
+GITHUB_TOKEN=        ← optional, for higher rate limits
+
+QUALITY RULES — NON-NEGOTIABLE
+
+Mobile-first. Everything must look perfect at 375px width. Test every component at mobile size.
+No login required anywhere. Home → paste username → see pet. That's it.
+Loading states for every async action. Never show a blank screen.
+Error states for every failure case. Never show a raw error or blank.
+The pet sprite MUST be animated — not a static emoji or placeholder image.
+All stat bars must animate on entrance.
+The share button must actually copy text to clipboard.
+The leaderboard must persist across page refreshes via localStorage.
+Dark theme only. No white backgrounds anywhere.
+Press Start 2P Google Font loaded via next/font/google for all pixel-style text.
+
+
+FEATURES LIST FOR SUBMISSION (3 minimum — we have 5)
+
+Live GitHub pet — paste username, fetch real data, render evolving creature
+AI Vibe Analysis — GPT-4o-mini reads commit messages and generates pet personality
+Outfit & accessory unlocks — language-based cosmetics rendered on pet
+Mood system — dynamic emotional state with animated badge
+Session leaderboard — persists across page visits, shows top pets
+
+
+Build this completely. Do not leave placeholder components. Every feature listed must work end-to-end. Start with the GitHub data layer and pet logic, then build the UI on top of real data.
