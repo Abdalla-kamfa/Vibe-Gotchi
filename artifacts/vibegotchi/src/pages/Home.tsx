@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "wouter";
 import { fetchGitHubPetData, type GitHubPetData } from "../lib/github";
@@ -17,6 +17,31 @@ type Phase = "input" | "loading" | "result" | "error";
 interface ErrorState {
   type: "not_found" | "rate_limited" | "generic";
   message: string;
+}
+
+const STARS = Array.from({ length: 48 }, (_, i) => ({
+  id: i,
+  x: Math.round((i * 137.5) % 100),
+  y: Math.round((i * 97.3) % 100),
+  size: i % 3 === 0 ? 2 : 1,
+  delay: (i * 0.43) % 3,
+  dur: 2 + (i * 0.31) % 3,
+}));
+
+function StarField() {
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      {STARS.map((s) => (
+        <motion.div
+          key={s.id}
+          className="absolute rounded-full bg-white"
+          style={{ left: `${s.x}%`, top: `${s.y}%`, width: s.size, height: s.size }}
+          animate={{ opacity: [0.1, 0.7, 0.1] }}
+          transition={{ duration: s.dur, repeat: Infinity, delay: s.delay, ease: "easeInOut" }}
+        />
+      ))}
+    </div>
+  );
 }
 
 export default function Home() {
@@ -46,14 +71,14 @@ export default function Home() {
       );
       setVibeResult(vibe);
 
-      const stage = getPetStage(data.commitCount30Days);
-      const level = getLevel(data.totalRepos, data.totalStars);
+      const lvl = getLevel(data.totalRepos, data.totalStars);
+      const stg = getPetStage(data.commitCount30Days, lvl);
       const mood = getMood(data.daysSinceLastCommit, vibe.moodBoost as "positive" | "neutral" | "negative");
 
       saveToLeaderboard({
         username: data.username,
-        stage,
-        level,
+        stage: stg,
+        level: lvl,
         mood: `${mood.emoji} ${mood.label}`,
         timestamp: Date.now(),
       });
@@ -79,28 +104,30 @@ export default function Home() {
     setError(null);
   }
 
-  const stage = petData ? getPetStage(petData.commitCount30Days) : "egg";
-  const colors = petData ? getPetColors(petData.topLanguage) : { fill: "#22c55e", accent: "#86efac" };
-  const accessories = petData ? getAccessories(petData.topLanguage, petData.totalStars, petData.daysSinceLastCommit, petData.commitCount30Days) : [];
-  const mood = petData ? getMood(petData.daysSinceLastCommit, vibeResult?.moodBoost as "positive" | "neutral" | "negative" | undefined) : null;
-  const level = petData ? getLevel(petData.totalRepos, petData.totalStars) : 0;
-  const healthPercent = petData ? getHealthPercent(petData.daysSinceLastCommit) : 0;
-  const energyPercent = petData ? getEnergyPercent(
+  const level = useMemo(() => petData ? getLevel(petData.totalRepos, petData.totalStars) : 0, [petData]);
+  const stage = useMemo(() => petData ? getPetStage(petData.commitCount30Days, level) : "egg", [petData, level]);
+  const colors = useMemo(() => petData ? getPetColors(petData.topLanguage) : { fill: "#22c55e", accent: "#86efac" }, [petData]);
+  const accessories = useMemo(() => petData ? getAccessories(petData.topLanguage, petData.totalStars, petData.daysSinceLastCommit, petData.commitCount30Days) : [], [petData]);
+  const mood = useMemo(() => petData ? getMood(petData.daysSinceLastCommit, vibeResult?.moodBoost as "positive" | "neutral" | "negative" | undefined) : null, [petData, vibeResult]);
+  const healthPercent = useMemo(() => petData ? getHealthPercent(petData.daysSinceLastCommit) : 0, [petData]);
+  const energyPercent = useMemo(() => petData ? getEnergyPercent(
     petData.commitCount30Days > 0 ? Math.ceil(petData.commitCount30Days * 0.4) : 0,
     petData.commitCount30Days > 0 ? Math.ceil(petData.commitCount30Days * 0.3) : 0
-  ) : 0;
+  ) : 0, [petData]);
 
   return (
-    <div className="min-h-screen bg-space flex flex-col items-center px-4 py-8">
-      {/* Header always visible */}
+    <div className="relative min-h-screen bg-space flex flex-col items-center px-4 py-4 sm:py-8">
+      <StarField />
+
+      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="text-center mb-8 w-full max-w-lg"
+        className="relative text-center mb-5 sm:mb-8 w-full max-w-lg"
       >
         <h1
-          className="font-pixel text-2xl sm:text-3xl text-white mb-3"
+          className="font-pixel text-2xl sm:text-3xl text-white mb-2 sm:mb-3"
           style={{ textShadow: "0 0 20px rgba(57,255,20,0.5), 0 0 40px rgba(147,51,234,0.3)" }}
           data-testid="text-title"
         >
@@ -120,7 +147,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4 }}
-            className="w-full max-w-sm flex flex-col items-center gap-6"
+            className="relative w-full max-w-sm flex flex-col items-center gap-6"
           >
             <form onSubmit={handleSummon} className="w-full flex flex-col gap-3">
               <input
@@ -156,7 +183,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="w-full max-w-sm"
+            className="relative w-full max-w-sm"
           >
             <LoadingEgg />
           </motion.div>
@@ -169,10 +196,9 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="w-full max-w-sm flex flex-col items-center gap-6"
+            className="relative w-full max-w-sm flex flex-col items-center gap-6"
           >
             <div className="flex flex-col items-center gap-4">
-              {/* Sad egg */}
               <svg width="100" height="116" viewBox="0 0 120 140" fill="none">
                 <ellipse cx="60" cy="75" rx="45" ry="58" fill="#1e1e2e" stroke="#444466" strokeWidth="2" />
                 <circle cx="46" cy="70" r="5" fill="#666677" />
@@ -200,9 +226,8 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="w-full max-w-2xl flex flex-col gap-6"
+            className="relative w-full max-w-2xl flex flex-col gap-3 sm:gap-5"
           >
-            {/* Username & personality */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -212,21 +237,14 @@ export default function Home() {
               <p className="font-pixel text-[9px] text-white/40 mt-1 tracking-widest uppercase">{vibeResult.petPersonality}</p>
             </motion.div>
 
-            {/* Pet + Stats layout */}
-            <div className="flex flex-col lg:flex-row gap-6 items-start">
-              {/* Pet area */}
-              <div className="flex flex-col items-center gap-4 w-full lg:w-auto lg:min-w-[240px]">
+            {/* Pet + Stats — stacked on mobile, side-by-side on lg */}
+            <div className="flex flex-col lg:flex-row gap-3 sm:gap-5 items-start">
+              {/* Pet column */}
+              <div className="flex flex-col items-center gap-2 sm:gap-3 w-full lg:w-auto lg:min-w-[220px]">
                 <PetSprite stage={stage} colors={colors} accessories={accessories} />
-
                 <MoodBadge emoji={mood.emoji} label={mood.label} tier={mood.tier} />
-
-                <div className="flex flex-col items-center gap-3">
-                  <ShareButton
-                    level={level}
-                    stage={stage}
-                    moodEmoji={mood.emoji}
-                    moodLabel={mood.label}
-                  />
+                <div className="flex flex-col items-center gap-2">
+                  <ShareButton level={level} stage={stage} moodEmoji={mood.emoji} moodLabel={mood.label} />
                   <Link
                     href="/leaderboard"
                     className="text-xs text-white/40 hover:text-white/70 transition-colors"
@@ -237,7 +255,7 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Stats panel */}
+              {/* Stats column */}
               <div className="flex-1 w-full">
                 <StatsPanel
                   healthPercent={healthPercent}
@@ -253,12 +271,11 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Search another */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
-              className="flex justify-center"
+              className="flex justify-center pb-2"
             >
               <button
                 data-testid="button-search-another"

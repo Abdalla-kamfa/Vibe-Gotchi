@@ -24,16 +24,8 @@ function ParticleEffect({ color }: { color: string }) {
             cy={cy}
             r={4}
             fill={color}
-            animate={{
-              r: [3, 5, 3],
-              opacity: [0.4, 1, 0.4],
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              delay: i * 0.18,
-              ease: "easeInOut",
-            }}
+            animate={{ r: [3, 5, 3], opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.18, ease: "easeInOut" }}
           />
         );
       })}
@@ -48,13 +40,29 @@ function EggPet({ colors }: { colors: { fill: string; accent: string } }) {
       <ellipse cx="100" cy="112" rx="48" ry="60" fill={colors.fill} stroke={colors.accent} strokeWidth="2" />
       <path d="M88 76 L93 92 L86 102 L96 118" stroke={colors.accent} strokeWidth="2" strokeLinecap="round" opacity="0.7" />
       <path d="M110 80 L106 94 L112 106" stroke={colors.accent} strokeWidth="2" strokeLinecap="round" opacity="0.7" />
-      <motion.g animate={{ scaleY: [1, 0.08, 1] }} transition={{ duration: 3.5, repeat: Infinity, repeatDelay: 2 }} style={{ transformOrigin: "100px 110px" }}>
-        <ellipse cx="84" cy="109" rx="6" ry="7" fill="#1a1a2e" />
-        <ellipse cx="116" cy="109" rx="6" ry="7" fill="#1a1a2e" />
-        <circle cx="82" cy="107" r="2.5" fill="white" opacity="0.6" />
-        <circle cx="114" cy="107" r="2.5" fill="white" opacity="0.6" />
+      {/* Stubby arms */}
+      <motion.g
+        animate={{ rotate: [-12, 12, -12] }}
+        transition={{ duration: 0.9, repeat: Infinity, ease: "easeInOut" }}
+        style={{ transformOrigin: "100px 118px" }}
+      >
+        <ellipse cx="54" cy="118" rx="14" ry="9" fill={colors.fill} stroke={colors.accent} strokeWidth="1.5" />
+        <ellipse cx="146" cy="118" rx="14" ry="9" fill={colors.fill} stroke={colors.accent} strokeWidth="1.5" />
       </motion.g>
-      <path d="M88 128 Q100 122 112 128" stroke={colors.accent} strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.6" />
+      {/* Blinking eyes */}
+      <motion.g
+        animate={{ scaleY: [1, 0.06, 1, 1, 1] }}
+        transition={{ duration: 3.5, repeat: Infinity, repeatDelay: 1.5, ease: "easeInOut" }}
+        style={{ transformOrigin: "100px 108px" }}
+      >
+        <ellipse cx="84" cy="106" rx="7" ry="8" fill="#1a1a2e" />
+        <ellipse cx="116" cy="106" rx="7" ry="8" fill="#1a1a2e" />
+        <circle cx="81" cy="103" r="3" fill="white" opacity="0.7" />
+        <circle cx="113" cy="103" r="3" fill="white" opacity="0.7" />
+        <motion.circle cx="82" cy="104" r="1.5" fill={colors.accent} animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.2, repeat: Infinity }} />
+        <motion.circle cx="114" cy="104" r="1.5" fill={colors.accent} animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.2, repeat: Infinity, delay: 0.6 }} />
+      </motion.g>
+      <path d="M88 126 Q100 120 112 126" stroke={colors.accent} strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.7" />
     </g>
   );
 }
@@ -64,19 +72,27 @@ function BabyPet({ colors }: { colors: { fill: string; accent: string } }) {
     <g>
       <ellipse cx="100" cy="120" rx="42" ry="38" fill={colors.fill} opacity="0.15" />
       <ellipse cx="100" cy="118" rx="38" ry="34" fill={colors.fill} stroke={colors.accent} strokeWidth="2" />
+      {/* Wiggling arms */}
       <motion.g
-        animate={{ rotate: [-5, 5, -5] }}
-        transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut" }}
+        animate={{ rotate: [-15, 15, -15] }}
+        transition={{ duration: 0.7, repeat: Infinity, ease: "easeInOut" }}
         style={{ transformOrigin: "100px 118px" }}
       >
-        <ellipse cx="65" cy="112" rx="12" ry="9" fill={colors.fill} stroke={colors.accent} strokeWidth="1.5" />
-        <ellipse cx="135" cy="112" rx="12" ry="9" fill={colors.fill} stroke={colors.accent} strokeWidth="1.5" />
+        <ellipse cx="58" cy="114" rx="14" ry="9" fill={colors.fill} stroke={colors.accent} strokeWidth="1.5" />
+        <ellipse cx="142" cy="114" rx="14" ry="9" fill={colors.fill} stroke={colors.accent} strokeWidth="1.5" />
       </motion.g>
-      <motion.g animate={{ scaleY: [1, 0.08, 1] }} transition={{ duration: 3, repeat: Infinity, repeatDelay: 1.5 }} style={{ transformOrigin: "100px 115px" }}>
-        <circle cx="88" cy="113" r="7" fill="#1a1a2e" />
-        <circle cx="112" cy="113" r="7" fill="#1a1a2e" />
-        <circle cx="86" cy="111" r="3" fill="white" opacity="0.7" />
-        <circle cx="110" cy="111" r="3" fill="white" opacity="0.7" />
+      {/* Blinking eyes */}
+      <motion.g
+        animate={{ scaleY: [1, 0.06, 1, 1, 1] }}
+        transition={{ duration: 3, repeat: Infinity, repeatDelay: 1.2, ease: "easeInOut" }}
+        style={{ transformOrigin: "100px 113px" }}
+      >
+        <circle cx="88" cy="111" r="8" fill="#1a1a2e" />
+        <circle cx="112" cy="111" r="8" fill="#1a1a2e" />
+        <circle cx="85" cy="108" r="3.5" fill="white" opacity="0.8" />
+        <circle cx="109" cy="108" r="3.5" fill="white" opacity="0.8" />
+        <motion.circle cx="86" cy="109" r="1.8" fill={colors.accent} animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.0, repeat: Infinity }} />
+        <motion.circle cx="110" cy="109" r="1.8" fill={colors.accent} animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.0, repeat: Infinity, delay: 0.5 }} />
       </motion.g>
       <ellipse cx="83" cy="121" r="5" fill={colors.accent} opacity="0.3" />
       <ellipse cx="117" cy="121" r="5" fill={colors.accent} opacity="0.3" />
@@ -90,18 +106,30 @@ function TeenPet({ colors }: { colors: { fill: string; accent: string } }) {
     <g>
       <ellipse cx="100" cy="105" rx="46" ry="56" fill={colors.fill} opacity="0.12" />
       <ellipse cx="100" cy="103" rx="40" ry="50" fill={colors.fill} stroke={colors.accent} strokeWidth="2" />
-      <rect x="60" y="110" width="14" height="26" rx="7" fill={colors.fill} stroke={colors.accent} strokeWidth="1.5" />
-      <rect x="126" y="110" width="14" height="26" rx="7" fill={colors.fill} stroke={colors.accent} strokeWidth="1.5" />
+      <motion.g
+        animate={{ rotate: [-8, 8, -8] }}
+        transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
+        style={{ transformOrigin: "100px 115px" }}
+      >
+        <rect x="60" y="110" width="14" height="26" rx="7" fill={colors.fill} stroke={colors.accent} strokeWidth="1.5" />
+        <rect x="126" y="110" width="14" height="26" rx="7" fill={colors.fill} stroke={colors.accent} strokeWidth="1.5" />
+      </motion.g>
       <rect x="74" y="138" width="12" height="22" rx="6" fill={colors.fill} stroke={colors.accent} strokeWidth="1.5" />
       <rect x="114" y="138" width="12" height="22" rx="6" fill={colors.fill} stroke={colors.accent} strokeWidth="1.5" />
-      <motion.g animate={{ scaleY: [1, 0.08, 1] }} transition={{ duration: 3.2, repeat: Infinity, repeatDelay: 1.8 }} style={{ transformOrigin: "100px 100px" }}>
-        <circle cx="87" cy="98" r="8" fill="#1a1a2e" />
-        <circle cx="113" cy="98" r="8" fill="#1a1a2e" />
-        <circle cx="84" cy="95" r="3" fill="white" opacity="0.8" />
-        <circle cx="110" cy="95" r="3" fill="white" opacity="0.8" />
+      <motion.g
+        animate={{ scaleY: [1, 0.06, 1, 1, 1] }}
+        transition={{ duration: 3.2, repeat: Infinity, repeatDelay: 1.8 }}
+        style={{ transformOrigin: "100px 98px" }}
+      >
+        <circle cx="87" cy="96" r="9" fill="#1a1a2e" />
+        <circle cx="113" cy="96" r="9" fill="#1a1a2e" />
+        <circle cx="84" cy="92" r="3.5" fill="white" opacity="0.9" />
+        <circle cx="110" cy="92" r="3.5" fill="white" opacity="0.9" />
+        <motion.circle cx="85" cy="93" r="2" fill={colors.accent} animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.1, repeat: Infinity }} />
+        <motion.circle cx="111" cy="93" r="2" fill={colors.accent} animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.1, repeat: Infinity, delay: 0.55 }} />
       </motion.g>
-      <path d="M90 116 Q100 122 110 116" stroke={colors.accent} strokeWidth="2.5" strokeLinecap="round" fill="none" />
-      <path d="M83 88 Q87 82 100 82 Q113 82 117 88" stroke={colors.accent} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.5" />
+      <path d="M90 114 Q100 120 110 114" stroke={colors.accent} strokeWidth="2.5" strokeLinecap="round" fill="none" />
+      <path d="M83 85 Q87 79 100 79 Q113 79 117 85" stroke={colors.accent} strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.5" />
     </g>
   );
 }
@@ -116,20 +144,30 @@ function AdultPet({ colors }: { colors: { fill: string; accent: string } }) {
         transition={{ duration: 2, repeat: Infinity }}
       />
       <ellipse cx="100" cy="98" rx="48" ry="58" fill={colors.fill} stroke={colors.accent} strokeWidth="2.5" />
-      <rect x="52" y="104" width="16" height="32" rx="8" fill={colors.fill} stroke={colors.accent} strokeWidth="2" />
-      <rect x="132" y="104" width="16" height="32" rx="8" fill={colors.fill} stroke={colors.accent} strokeWidth="2" />
+      <motion.g
+        animate={{ rotate: [-7, 7, -7] }}
+        transition={{ duration: 1.3, repeat: Infinity, ease: "easeInOut" }}
+        style={{ transformOrigin: "100px 110px" }}
+      >
+        <rect x="52" y="104" width="16" height="32" rx="8" fill={colors.fill} stroke={colors.accent} strokeWidth="2" />
+        <rect x="132" y="104" width="16" height="32" rx="8" fill={colors.fill} stroke={colors.accent} strokeWidth="2" />
+      </motion.g>
       <rect x="68" y="144" width="14" height="26" rx="7" fill={colors.fill} stroke={colors.accent} strokeWidth="2" />
       <rect x="118" y="144" width="14" height="26" rx="7" fill={colors.fill} stroke={colors.accent} strokeWidth="2" />
-      <motion.g animate={{ scaleY: [1, 0.08, 1] }} transition={{ duration: 4, repeat: Infinity, repeatDelay: 2.5 }} style={{ transformOrigin: "100px 95px" }}>
-        <circle cx="86" cy="93" r="10" fill="#0a0a18" />
-        <circle cx="114" cy="93" r="10" fill="#0a0a18" />
-        <circle cx="82" cy="89" r="4" fill="white" opacity="0.9" />
-        <circle cx="110" cy="89" r="4" fill="white" opacity="0.9" />
-        <circle cx="83" cy="89" r="1.5" fill={colors.accent} opacity="0.8" />
-        <circle cx="111" cy="89" r="1.5" fill={colors.accent} opacity="0.8" />
+      <motion.g
+        animate={{ scaleY: [1, 0.06, 1, 1, 1] }}
+        transition={{ duration: 4, repeat: Infinity, repeatDelay: 2.5 }}
+        style={{ transformOrigin: "100px 93px" }}
+      >
+        <circle cx="86" cy="91" r="11" fill="#0a0a18" />
+        <circle cx="114" cy="91" r="11" fill="#0a0a18" />
+        <circle cx="82" cy="87" r="4.5" fill="white" opacity="0.95" />
+        <circle cx="110" cy="87" r="4.5" fill="white" opacity="0.95" />
+        <motion.circle cx="83" cy="88" r="2.5" fill={colors.accent} animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 0.9, repeat: Infinity }} />
+        <motion.circle cx="111" cy="88" r="2.5" fill={colors.accent} animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 0.9, repeat: Infinity, delay: 0.45 }} />
       </motion.g>
-      <path d="M87 114 Q100 122 113 114" stroke={colors.accent} strokeWidth="3" strokeLinecap="round" fill="none" />
-      <path d="M82 76 Q86 66 100 65 Q114 66 118 76" stroke={colors.accent} strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.6" />
+      <path d="M87 112 Q100 120 113 112" stroke={colors.accent} strokeWidth="3" strokeLinecap="round" fill="none" />
+      <path d="M82 73 Q86 63 100 62 Q114 63 118 73" stroke={colors.accent} strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.6" />
     </g>
   );
 }
@@ -150,21 +188,30 @@ function LegendPet({ colors }: { colors: { fill: string; accent: string } }) {
         transition={{ duration: 1.2, repeat: Infinity, delay: 0.3 }}
       />
       <ellipse cx="100" cy="96" rx="50" ry="62" fill={colors.fill} stroke="#fbbf24" strokeWidth="3" />
-      <rect x="48" y="102" width="17" height="35" rx="8.5" fill={colors.fill} stroke="#fbbf24" strokeWidth="2" />
-      <rect x="135" y="102" width="17" height="35" rx="8.5" fill={colors.fill} stroke="#fbbf24" strokeWidth="2" />
+      <motion.g
+        animate={{ rotate: [-6, 6, -6] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        style={{ transformOrigin: "100px 108px" }}
+      >
+        <rect x="48" y="102" width="17" height="35" rx="8.5" fill={colors.fill} stroke="#fbbf24" strokeWidth="2" />
+        <rect x="135" y="102" width="17" height="35" rx="8.5" fill={colors.fill} stroke="#fbbf24" strokeWidth="2" />
+      </motion.g>
       <rect x="65" y="148" width="15" height="28" rx="7.5" fill={colors.fill} stroke="#fbbf24" strokeWidth="2" />
       <rect x="120" y="148" width="15" height="28" rx="7.5" fill={colors.fill} stroke="#fbbf24" strokeWidth="2" />
-      <motion.g animate={{ scaleY: [1, 0.06, 1] }} transition={{ duration: 4.5, repeat: Infinity, repeatDelay: 3 }} style={{ transformOrigin: "100px 90px" }}>
-        <circle cx="85" cy="88" r="12" fill="#0a0a18" />
-        <circle cx="115" cy="88" r="12" fill="#0a0a18" />
-        <circle cx="80" cy="83" r="5" fill="white" opacity="0.95" />
-        <circle cx="110" cy="83" r="5" fill="white" opacity="0.95" />
-        <motion.circle cx="81" cy="84" r="2" fill="#fbbf24" animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 1, repeat: Infinity }} />
-        <motion.circle cx="111" cy="84" r="2" fill="#fbbf24" animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 1, repeat: Infinity, delay: 0.5 }} />
+      <motion.g
+        animate={{ scaleY: [1, 0.06, 1, 1, 1] }}
+        transition={{ duration: 4.5, repeat: Infinity, repeatDelay: 3 }}
+        style={{ transformOrigin: "100px 86px" }}
+      >
+        <circle cx="85" cy="84" r="13" fill="#0a0a18" />
+        <circle cx="115" cy="84" r="13" fill="#0a0a18" />
+        <circle cx="80" cy="79" r="5.5" fill="white" opacity="0.98" />
+        <circle cx="110" cy="79" r="5.5" fill="white" opacity="0.98" />
+        <motion.circle cx="81" cy="80" r="3" fill="#fbbf24" animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 1, repeat: Infinity }} />
+        <motion.circle cx="111" cy="80" r="3" fill="#fbbf24" animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 1, repeat: Infinity, delay: 0.5 }} />
       </motion.g>
-      <path d="M85 112 Q100 122 115 112" stroke="#fbbf24" strokeWidth="3.5" strokeLinecap="round" fill="none" />
-      {/* Crown */}
-      <g transform="translate(72, 20)">
+      <path d="M85 110 Q100 120 115 110" stroke="#fbbf24" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+      <g transform="translate(72, 18)">
         <polygon points="28,0 56,0 50,28 40,18 28,28 16,18 0,28" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1.5" />
         <circle cx="28" cy="3" r="4" fill="#fbbf24" />
         <circle cx="56" cy="3" r="4" fill="#fbbf24" />
@@ -176,9 +223,14 @@ function LegendPet({ colors }: { colors: { fill: string; accent: string } }) {
   );
 }
 
+const SKULL_Y: Record<PetStage, number> = {
+  egg: 72, baby: 75, teen: 62, adult: 56, legend: 48,
+};
+
 function AccessoryOverlay({ accessories, stage }: { accessories: string[]; stage: PetStage }) {
   const large = stage === "adult" || stage === "legend";
   const cy = large ? 35 : 50;
+  const skullY = SKULL_Y[stage];
   return (
     <g>
       {accessories.includes("wizard_hat") && (
@@ -228,13 +280,16 @@ function AccessoryOverlay({ accessories, stage }: { accessories: string[]; stage
       )}
       {accessories.includes("skull") && (
         <motion.g
-          animate={{ opacity: [1, 0.2, 0.8, 0.1, 1], x: [-1, 1, -1] }}
-          transition={{ duration: 0.6, repeat: Infinity }}
+          animate={{ opacity: [1, 0.15, 0.9, 0.1, 1], x: [-1, 1, -1] }}
+          transition={{ duration: 0.55, repeat: Infinity }}
         >
-          <circle cx="100" cy="42" r="18" fill="#1e1e2e" stroke="#ef4444" strokeWidth="2" />
-          <circle cx="93" cy="39" r="5" fill="#ef4444" opacity="0.8" />
-          <circle cx="107" cy="39" r="5" fill="#ef4444" opacity="0.8" />
-          <path d="M90 52 L95 52 L95 56 L93 56 L93 52 M100 52 L100 56 M105 52 L110 52 L110 56 L107 56 L107 52" stroke="#ef4444" strokeWidth="1.5" fill="none" />
+          <circle cx="100" cy={skullY} r="20" fill="#100c1c" stroke="#ef4444" strokeWidth="2.5" />
+          <circle cx="93" cy={skullY - 3} r="6" fill="#ef4444" opacity="0.9" />
+          <circle cx="107" cy={skullY - 3} r="6" fill="#ef4444" opacity="0.9" />
+          <path
+            d={`M89 ${skullY + 10} L94 ${skullY + 10} L94 ${skullY + 14} L92 ${skullY + 14} L92 ${skullY + 10} M99 ${skullY + 10} L99 ${skullY + 14} M104 ${skullY + 10} L109 ${skullY + 10} L109 ${skullY + 14} L107 ${skullY + 14} L107 ${skullY + 10}`}
+            stroke="#ef4444" strokeWidth="1.5" fill="none"
+          />
         </motion.g>
       )}
     </g>
@@ -251,8 +306,8 @@ export function PetSprite({ stage, colors, accessories }: PetSpriteProps) {
       className="flex items-center justify-center"
     >
       <motion.div
-        animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+        animate={{ y: [0, -14, 0], scaleX: [1, 1.04, 1], scaleY: [1, 0.96, 1] }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
       >
         <svg
           width="200"
@@ -262,10 +317,10 @@ export function PetSprite({ stage, colors, accessories }: PetSpriteProps) {
           xmlns="http://www.w3.org/2000/svg"
           style={{ overflow: "visible" }}
         >
-          {stage === "egg" && <EggPet colors={colors} />}
-          {stage === "baby" && <BabyPet colors={colors} />}
-          {stage === "teen" && <TeenPet colors={colors} />}
-          {stage === "adult" && <AdultPet colors={colors} />}
+          {stage === "egg"    && <EggPet colors={colors} />}
+          {stage === "baby"   && <BabyPet colors={colors} />}
+          {stage === "teen"   && <TeenPet colors={colors} />}
+          {stage === "adult"  && <AdultPet colors={colors} />}
           {stage === "legend" && <LegendPet colors={colors} />}
           <AccessoryOverlay accessories={accessories} stage={stage} />
         </svg>
