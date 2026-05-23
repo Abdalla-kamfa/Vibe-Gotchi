@@ -1,0 +1,273 @@
+
+Redesign the entire stats panel section to be a world-class premium RPG character sheet. This is the most data-rich part of the app and must look extraordinary. Every detail matters.
+OVERALL STATS PANEL CONCEPT
+Think: a premium RPG game character sheet meets a dark trading terminal meets a retro arcade game. The panel should make judges stop scrolling and say "wait, this looks incredible."
+PANEL CONTAINER
+css/* Outer container */
+background: linear-gradient(135deg, 
+  rgba(0, 255, 136, 0.03) 0%, 
+  rgba(0, 0, 0, 0) 50%,
+  rgba(120, 0, 255, 0.03) 100%
+);
+backdrop-filter: blur(24px);
+-webkit-backdrop-filter: blur(24px);
+border: 1px solid rgba(255, 255, 255, 0.06);
+border-radius: 24px;
+padding: 24px;
+position: relative;
+overflow: hidden;
+Add a corner accent in each corner of the panel:
+
+Top-left: L-shaped green line (2px, 16px each arm)
+Top-right: L-shaped green line (mirrored)
+Bottom-left: L-shaped green line (mirrored)
+Bottom-right: L-shaped green line (mirrored)
+These look like targeting reticles from a sci-fi game.
+
+Add a very subtle grid pattern inside the panel:
+cssbackground-image: 
+  linear-gradient(rgba(0,255,136,0.02) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(0,255,136,0.02) 1px, transparent 1px);
+background-size: 20px 20px;
+PANEL HEADER
+At the top of the stats panel show:
+Left side:
+
+Text "STATS" in Press Start 2P, 10px, muted green (#00ff8866)
+Animated scanning line that moves across the text (green line moves left to right, 3s loop)
+
+Right side:
+
+Level display: "Lv.XX" — level number large (28px Inter Bold)
+Color based on level:
+
+1-10: #888888 grey
+11-30: #00ff88 green
+31-50: #0088ff blue
+51-80: #aa44ff purple
+81+: #ffaa00 gold with glow animation
+
+
+Small up arrow icon next to level that pulses when level is high
+
+HEALTH AND ENERGY BARS — REDESIGNED
+These are the hero stats. Make them extraordinary.
+Container for each bar:
+[ICON] [LABEL]                    [VALUE%]
+[████████████░░░░░░░░░░░░░░░░░░]
+Health Bar:
+
+Icon: ❤️ animated heartbeat pulse (scale 1 → 1.3 → 1 synced to a heartbeat rhythm, 1.2s loop)
+Label: "HEALTH" in Press Start 2P 8px
+Value: percentage number right-aligned, Inter Bold
+Bar height: 10px
+Bar background: rgba(255,255,255,0.06) with inner shadow
+Bar fill: gradient #ff2244 → #ff6644 → #ffaa44 (red to orange to yellow as health increases)
+At full health (80%+): bar glows with red outer glow
+At low health (20%-): bar flickers and color becomes darker red
+At zero: bar shows a flat dead line with no fill
+Bar border-radius: 999px (pill shape)
+Fill animation: grows from 0% to final value over 1.2 seconds with ease-out
+After filling: shimmer sweep from left to right, repeats every 5 seconds
+
+Energy Bar:
+
+Icon: ⚡ that flickers randomly (opacity 1 → 0.6 → 1, random timing)
+Label: "ENERGY" in Press Start 2P 8px
+Bar fill: gradient #ffdd00 → #88ff00 (yellow to green)
+At full energy: bar has electric spark particles moving along it
+At zero energy: show "DEPLETED" text in small muted red instead of bar
+Same animation as health bar but with 200ms delay
+
+Spacing between bars: 16px gap
+STAT GRID — 4 CELLS
+Below the bars, a 2×2 grid showing Fed, Streak, Level, Stars.
+Each cell design:
+┌─────────────────────┐
+│ 🍕  FED             │
+│                     │
+│    42 commits       │
+│                     │
+│ ████ this month     │
+└─────────────────────┘
+Cell container:
+cssbackground: rgba(255, 255, 255, 0.02);
+border: 1px solid rgba(255, 255, 255, 0.05);
+border-radius: 16px;
+padding: 16px;
+min-height: 90px;
+position: relative;
+transition: all 200ms ease;
+cursor: default;
+Cell hover effect:
+cssbackground: rgba(255, 255, 255, 0.04);
+border-color: rgba(0, 255, 136, 0.2);
+transform: translateY(-2px);
+box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+Cell color tinting — each cell has unique accent:
+
+Fed 🍕: subtle orange tint rgba(255, 136, 0, 0.04)
+Streak 🔥: subtle red tint rgba(255, 68, 0, 0.04)
+Level 🏆: subtle gold tint rgba(255, 170, 0, 0.04)
+Stars ⭐: subtle blue tint rgba(0, 136, 255, 0.04)
+
+Cell icon:
+
+Large emoji (20px) top-left
+Subtle rotate or bounce animation specific to each:
+
+🍕 Fed: slight wobble (rotate -5deg → 5deg → 0, on hover)
+🔥 Streak: flicker opacity animation always running
+🏆 Level: shine animation on hover
+⭐ Stars: twinkle (scale 1 → 1.2 → 1, random timing)
+
+
+
+Cell label:
+
+Top-right corner
+Press Start 2P, 7px
+Muted color matching the cell accent color
+
+Cell value:
+
+Center of cell, large
+Number: Inter Black, 24px desktop / 20px mobile
+Unit: Inter Regular, 12px muted (e.g. "commits", "days", "repos", "total")
+Number animates counting up from 0 to final value over 1 second on mount
+
+Cell bottom bar:
+
+Very thin (3px) colored bar at the very bottom of each cell
+Shows a mini progress indicator
+Fed: proportion of 30-commit goal
+Streak: proportion of 7-day streak goal
+Level: proportion to next level threshold
+Stars: logarithmic scale of star count
+
+Special states:
+
+Fed = 0: cell gets a pulsing red border and 💀 replaces 🍕
+Streak = 0: "BROKEN" text appears below value in tiny red
+Level 50+: gold shimmer on the entire cell
+Stars 100+: blue sparkle appears occasionally
+
+VIBE SECTION — FULL WIDTH
+Below the 2×2 grid, full width vibe display:
+Container:
+cssbackground: rgba(0, 255, 136, 0.03);
+border: 1px solid rgba(0, 255, 136, 0.1);
+border-left: 3px solid rgba(0, 255, 136, 0.6);
+border-radius: 0 12px 12px 0;
+padding: 16px 20px;
+margin-top: 12px;
+Layout:
+💬 VIBE
+❝ Git blame says 'not me' but the logs say otherwise ❞
+         — Ghost  •  analyzed by AI
+
+"💬 VIBE" label: Press Start 2P 7px, muted green, top-left
+Quote marks: large stylized ❝ and ❞ in muted green, 24px
+Vibe text: Inter Italic, 14px, #cccccc
+Text appears with typewriter animation on mount (each character types in over 1.5 seconds)
+Below text: small line showing personality word + "analyzed by AI" OR "rule-based" indicator
+If AI generated: small sparkle ✨ icon
+If fallback: small ⚙️ icon (honest but subtle)
+
+If vibe is loading:
+
+Show 3 animated dots ... pulsing
+Then text types in when ready
+
+LAST COMMIT INDICATOR
+Add a new element between the bars and the grid:
+📅 Last commit: 3 days ago  ──────────────── ⚠️ Getting rusty
+
+Left: calendar icon + "Last commit:" label + relative time (e.g. "just now", "2 hours ago", "3 days ago", "2 weeks ago")
+Right: status indicator that matches mood
+
+0-1 days: 🟢 "Active"
+2-3 days: 🟡 "Vibing"
+4-6 days: 🟠 "Getting rusty"
+7-13 days: 🔴 "Concerning"
+14+ days: 💀 "Critical"
+
+
+The status text color matches (green → yellow → orange → red → dark red)
+Thin connecting line between left and right
+
+STATS PANEL ENTRANCE ANIMATION
+When the stats panel first appears after pet loads:
+
+Panel fades in and slides up (translateY 20px → 0, opacity 0 → 1), 400ms
+Corner accents draw themselves in (width/height 0 → 16px), 300ms delay
+STATS header scans in from left, 200ms
+Health bar fills from left to right, 600ms delay, 1.2s duration
+Energy bar fills, 800ms delay, 1.2s duration
+Last commit line fades in, 900ms delay
+Stat cells pop in one by one with spring (scale 0.8 → 1), staggered 100ms each
+Vibe section slides up and types in, 1200ms delay
+
+Total entrance sequence: ~2.5 seconds — feels cinematic, not slow.
+MOBILE OPTIMIZATIONS
+At 375px:
+
+Corner accents: 12px arms (slightly smaller)
+Panel padding: 16px
+Bar height: 8px
+Cell min-height: 80px
+Cell value font: 20px
+Vibe text: 13px
+All touch targets minimum 44px
+
+At 768px+:
+
+Panel padding: 24px
+Bar height: 10px
+Cell min-height: 90px
+Cell value font: 24px
+
+TOOLTIP SYSTEM
+On hover/long-press of each stat, show a tooltip explaining it:
+┌─────────────────────────────┐
+│ ❤️ HEALTH                   │
+│ Based on days since your    │
+│ last commit. Full health =  │
+│ committed today.            │
+└─────────────────────────────┘
+Tooltips:
+
+Health: "Based on recency of last commit. Commits daily = full health."
+Energy: "Ratio of this week's commits vs last week. More than last week = full energy."
+Fed: "Total commits in the last 30 days. Commits are food for your pet."
+Streak: "Consecutive days with at least one commit. Don't break the chain."
+Level: "Calculated from total public repos and stars. Grow your portfolio."
+Stars: "Total stars across all public repositories. Community recognition."
+Vibe: "AI analysis of your last 5 commit messages. What do they reveal about you?"
+
+Tooltip style:
+cssbackground: rgba(10, 10, 15, 0.95);
+border: 1px solid rgba(0, 255, 136, 0.2);
+border-radius: 12px;
+padding: 12px 16px;
+font-size: 12px;
+color: #aaaaaa;
+max-width: 200px;
+box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+Position: above the stat on desktop, below on mobile.
+Show on hover (desktop) and long press 500ms (mobile).
+Fade in 150ms, fade out 150ms.
+AFTER ALL CHANGES
+
+Zero TypeScript errors
+Test at 375px, 768px, 1440px
+Test with: torvalds (legend stats), abdalla-kamfa (ghost stats)
+Verify all animations play correctly
+Verify entrance sequence is smooth
+Verify tooltips appear on all stats
+Verify mobile touch interactions work
+Push to GitHub
+Confirm Vercel deploys
+Screenshot the stats panel on desktop AND mobile and show me
+
+Make every pixel perfect. This stats panel alone should be enough to win the competition. 🏆

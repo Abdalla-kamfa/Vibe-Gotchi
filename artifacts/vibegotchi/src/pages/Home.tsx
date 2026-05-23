@@ -882,6 +882,8 @@ export default function Home() {
                   totalStars={petData.totalStars}
                   totalRepos={petData.totalRepos}
                   accentColor={colors.accent}
+                  daysSinceLastCommit={petData.daysSinceLastCommit}
+                  vibeIsAI={false}
                 />
               </div>
             </div>
