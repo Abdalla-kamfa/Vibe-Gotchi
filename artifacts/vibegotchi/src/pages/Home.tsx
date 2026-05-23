@@ -27,14 +27,22 @@ interface ErrorState {
   message: string;
 }
 
-const STARS = Array.from({ length: 48 }, (_, i) => ({
+const STARS = Array.from({ length: 80 }, (_, i) => ({
   id: i,
   x: Math.round((i * 137.5) % 100),
   y: Math.round((i * 97.3) % 100),
-  size: i % 3 === 0 ? 2 : 1,
-  delay: (i * 0.43) % 3,
-  dur: 2 + (i * 0.31) % 3,
+  size: i % 5 === 0 ? 3 : i % 3 === 0 ? 2 : 1,
+  delay: (i * 0.43) % 4,
+  dur: 1.8 + (i * 0.31) % 3.5,
 }));
+
+const EXAMPLE_USERS = ["torvalds", "sindresorhus", "wesbos"];
+
+const FEATURES = [
+  { icon: "🐾", title: "Evolves with commits", desc: "Egg → Baby → Teen → Adult → Legend based on your 30-day activity" },
+  { icon: "⚔️", title: "Battle other devs", desc: "Challenge anyone by username. Commits decide the winner." },
+  { icon: "🤖", title: "AI reads your vibe", desc: "GPT-4 analyzes your commit messages and assigns a coding personality" },
+];
 
 function BackgroundEffects() {
   return (
@@ -45,13 +53,50 @@ function BackgroundEffects() {
             key={s.id}
             className="absolute rounded-full bg-white"
             style={{ left: `${s.x}%`, top: `${s.y}%`, width: s.size, height: s.size }}
-            animate={{ opacity: [0.1, 0.7, 0.1] }}
+            animate={{ opacity: [0.05, s.size === 3 ? 0.9 : 0.65, 0.05] }}
             transition={{ duration: s.dur, repeat: Infinity, delay: s.delay, ease: "easeInOut" }}
           />
         ))}
       </div>
       <div className="scanlines fixed inset-0 pointer-events-none z-10" aria-hidden="true" />
     </>
+  );
+}
+
+function MiniPetPreview() {
+  return (
+    <motion.div
+      animate={{ y: [0, -10, 0] }}
+      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      className="select-none"
+      aria-hidden="true"
+    >
+      <svg width="56" height="56" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Baby pet body */}
+        <ellipse cx="100" cy="120" rx="54" ry="52" fill="#22c55e" />
+        <ellipse cx="100" cy="110" rx="46" ry="44" fill="#4ade80" />
+        {/* Eyes */}
+        <ellipse cx="85" cy="105" rx="9" ry="10" fill="white" />
+        <ellipse cx="115" cy="105" rx="9" ry="10" fill="white" />
+        <motion.g
+          animate={{ scaleY: [1, 0.1, 1] }}
+          transition={{ duration: 3.5, repeat: Infinity, repeatDelay: 1.5 }}
+          style={{ transformOrigin: "100px 105px" }}
+        >
+          <circle cx="87" cy="106" r="5" fill="#0f172a" />
+          <circle cx="117" cy="106" r="5" fill="#0f172a" />
+          <circle cx="89" cy="104" r="2" fill="white" />
+          <circle cx="119" cy="104" r="2" fill="white" />
+        </motion.g>
+        {/* Smile */}
+        <path d="M88 122 Q100 132 112 122" stroke="#166534" strokeWidth="3" strokeLinecap="round" fill="none" />
+        {/* Ears */}
+        <ellipse cx="60" cy="80" rx="14" ry="18" fill="#22c55e" transform="rotate(-15 60 80)" />
+        <ellipse cx="140" cy="80" rx="14" ry="18" fill="#22c55e" transform="rotate(15 140 80)" />
+        <ellipse cx="60" cy="80" rx="8" ry="11" fill="#86efac" transform="rotate(-15 60 80)" />
+        <ellipse cx="140" cy="80" rx="8" ry="11" fill="#86efac" transform="rotate(15 140 80)" />
+      </svg>
+    </motion.div>
   );
 }
 
@@ -238,42 +283,71 @@ export default function Home() {
         {muted ? "🔇" : "🔊"}
       </button>
 
-      {/* Header */}
+      {/* Hero */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="relative text-center mb-4 sm:mb-6 w-full max-w-lg"
+        transition={{ duration: 0.7 }}
+        className="relative text-center mb-6 sm:mb-8 w-full max-w-xl flex flex-col items-center gap-3"
       >
-        <h1
-          className="font-pixel text-2xl sm:text-3xl text-white mb-2 animate-rainbow-glow"
-          data-testid="text-title"
-        >
-          VibeGotchi
-        </h1>
-        <p className="text-sm text-white/40">Your GitHub commits. Your creature. Don't let it die.</p>
+        {/* Radial glow behind title */}
+        <div className="hero-glow" aria-hidden="true" />
+
+        {/* Pet preview + title row */}
+        <div className="relative z-10 flex items-center justify-center gap-4 sm:gap-5">
+          <MiniPetPreview />
+          <h1
+            className="font-pixel text-3xl sm:text-4xl lg:text-5xl text-white animate-rainbow-glow leading-tight"
+            data-testid="text-title"
+          >
+            VibeGotchi
+          </h1>
+          <MiniPetPreview />
+        </div>
+
+        <p className="relative z-10 text-base sm:text-lg text-white/60 font-medium max-w-sm leading-snug">
+          Your GitHub commits. Your creature.{" "}
+          <span className="text-white/90 font-semibold">Don't let it die.</span>
+        </p>
       </motion.div>
 
-      {/* Mode toggle — Solo / Battle */}
+      {/* Mode toggle — premium game tabs */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="relative flex gap-1 p-1 rounded-xl bg-white/[0.04] border border-white/[0.08] mb-5 sm:mb-7"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
+        className="relative flex gap-2 p-1.5 rounded-2xl bg-white/[0.04] border border-white/[0.08] mb-6 sm:mb-8"
       >
-        {(["solo", "battle"] as AppMode[]).map((m) => (
-          <button
-            key={m}
-            onClick={() => { setMode(m); handleReset(); }}
-            className="relative px-5 py-2 rounded-lg text-sm font-semibold transition-all"
-            style={mode === m
-              ? { backgroundColor: m === "battle" ? "#ff4444" : "var(--neon-green)", color: "#000" }
-              : { color: "rgba(255,255,255,0.4)" }
-            }
-          >
-            {m === "solo" ? "Solo" : "Battle 🥊"}
-          </button>
-        ))}
+        {(["solo", "battle"] as AppMode[]).map((m) => {
+          const isActive = mode === m;
+          const isBattle = m === "battle";
+          return (
+            <motion.button
+              key={m}
+              onClick={() => { setMode(m); handleReset(); }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className={`relative px-7 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 ${
+                isActive
+                  ? isBattle
+                    ? "bg-red-500 text-white tab-active-battle"
+                    : "text-black tab-active btn-summon"
+                  : "text-white/40 hover:text-white/70 hover:bg-white/[0.05]"
+              }`}
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="tab-indicator"
+                  className="absolute inset-0 rounded-xl"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">
+                {m === "solo" ? "🎮 Solo" : "⚔️ Battle"}
+              </span>
+            </motion.button>
+          );
+        })}
       </motion.div>
 
       <AnimatePresence mode="wait">
@@ -299,7 +373,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4 }}
-            className="relative w-full max-w-sm flex flex-col items-center gap-6"
+            className="relative w-full max-w-lg flex flex-col items-center gap-5"
           >
             <form onSubmit={handleSummon} className="w-full flex flex-col gap-3">
               <input
@@ -308,7 +382,7 @@ export default function Home() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter any GitHub username..."
-                className="w-full px-4 py-3.5 rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder-white/30 text-sm outline-none focus:border-[--neon-green] focus:ring-1 focus:ring-[--neon-green]/30 transition-all"
+                className="input-summon w-full px-5 py-4 rounded-2xl bg-white/[0.06] border border-white/10 text-white placeholder-white/25 text-base outline-none transition-all"
                 autoComplete="off"
                 spellCheck={false}
               />
@@ -316,14 +390,56 @@ export default function Home() {
                 data-testid="button-summon"
                 type="submit"
                 disabled={!username.trim()}
-                whileHover={{ scale: 1.03 }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
-                className="w-full py-3.5 rounded-xl font-semibold text-sm text-black transition-all disabled:opacity-40 disabled:cursor-not-allowed btn-summon"
+                className="w-full py-4 rounded-2xl font-bold text-base text-black transition-all disabled:opacity-35 disabled:cursor-not-allowed btn-summon"
               >
-                Summon My Pet
+                Summon My Pet ✨
               </motion.button>
             </form>
-            <p className="text-xs text-white/25 text-center">No login required. Any public GitHub username works.</p>
+
+            {/* Example username chips */}
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-xs text-white/25">Try a legend:</p>
+              <div className="flex gap-2 flex-wrap justify-center">
+                {EXAMPLE_USERS.map((u) => (
+                  <motion.button
+                    key={u}
+                    onClick={() => setUsername(u)}
+                    whileHover={{ scale: 1.06, backgroundColor: "rgba(57,255,20,0.12)" }}
+                    whileTap={{ scale: 0.96 }}
+                    className="px-3 py-1.5 rounded-full text-xs text-[--neon-green] border border-[--neon-green]/20 bg-[--neon-green]/[0.05] transition-colors font-mono"
+                  >
+                    @{u}
+                  </motion.button>
+                ))}
+              </div>
+            </div>
+
+            <p className="text-xs text-white/20 text-center">No login required · Any public GitHub username</p>
+
+            {/* Feature highlight cards */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35 }}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full mt-2"
+            >
+              {FEATURES.map((f, i) => (
+                <motion.div
+                  key={f.title}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + i * 0.08 }}
+                  whileHover={{ y: -3, boxShadow: "0 8px 24px rgba(57,255,20,0.07)" }}
+                  className="glass rounded-2xl p-4 flex flex-col gap-2 border border-white/[0.07] cursor-default"
+                >
+                  <span className="text-2xl">{f.icon}</span>
+                  <span className="font-semibold text-sm text-white/90">{f.title}</span>
+                  <span className="text-xs text-white/40 leading-relaxed">{f.desc}</span>
+                </motion.div>
+              ))}
+            </motion.div>
           </motion.div>
         )}
 
