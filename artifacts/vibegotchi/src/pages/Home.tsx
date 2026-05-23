@@ -64,6 +64,9 @@ export default function Home() {
   const [petName, setPetName] = useState("");
   const [error, setError] = useState<ErrorState | null>(null);
   const [muted, setMuted] = useState(sounds.muted);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [timeAgo, setTimeAgo] = useState("");
 
   function handleToggleMute() {
     const nowMuted = sounds.toggle();
@@ -93,6 +96,47 @@ export default function Home() {
       }
     }
   }, [phase, petData, stage]);
+
+  // Silent background refresh every 30 seconds while on result screen
+  const silentRefresh = useCallback(async (user: string) => {
+    setIsRefreshing(true);
+    try {
+      const data = await fetchGitHubPetData(user);
+      const vibe = await analyzeVibe(
+        data.recentCommitMessages, data.topLanguage,
+        data.commitCount30Days, data.daysSinceLastCommit,
+      );
+      setPetData(data);
+      setVibeResult(vibe);
+      setLastUpdated(new Date());
+    } catch (_) {
+      // silently ignore refresh errors — don't interrupt the user
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (phase !== "result" || !petData) return;
+    setLastUpdated(new Date());
+    const id = setInterval(() => silentRefresh(petData.username), 30_000);
+    return () => clearInterval(id);
+  }, [phase]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Keep the "X ago" label fresh without re-running the refresh
+  useEffect(() => {
+    if (!lastUpdated) return;
+    function recalc() {
+      if (!lastUpdated) return;
+      const secs = Math.round((Date.now() - lastUpdated.getTime()) / 1000);
+      if (secs < 5) setTimeAgo("just now");
+      else if (secs < 60) setTimeAgo(`${secs}s ago`);
+      else setTimeAgo(`${Math.floor(secs / 60)}m ago`);
+    }
+    recalc();
+    const id = setInterval(recalc, 5_000);
+    return () => clearInterval(id);
+  }, [lastUpdated]);
 
   const handleSummon = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -370,6 +414,19 @@ export default function Home() {
                   >
                     View Leaderboard →
                   </Link>
+                  {timeAgo && (
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <motion.span
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{ backgroundColor: isRefreshing ? "#fbbf24" : "#39ff14" }}
+                        animate={isRefreshing ? { opacity: [1, 0.2, 1] } : { opacity: [0.4, 1, 0.4] }}
+                        transition={{ duration: isRefreshing ? 0.6 : 2.5, repeat: Infinity }}
+                      />
+                      <span className="text-[10px] text-white/25">
+                        {isRefreshing ? "Refreshing…" : `Updated ${timeAgo}`}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
