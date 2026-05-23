@@ -1,0 +1,214 @@
+Paste this entire prompt to Replit Agent right now:
+
+We are making VibeGotchi a perfect 10/10 competition-winning submission. Implement every single item below completely. No placeholders. No shortcuts.
+1. RESPONSIVE DESIGN — PERFECT ON EVERY DEVICE
+Make the app pixel-perfect on ALL screen sizes:
+Mobile (320px — 480px):
+
+Pet centered, takes up 55% of screen height
+Stats panel full width below pet
+Single column layout
+Touch-friendly buttons minimum 48px height
+No horizontal scrolling ever
+Font sizes scale down gracefully
+
+Tablet (481px — 1024px):
+
+Pet and stats side by side
+Pet takes left 45%, stats take right 55%
+Comfortable padding 24px
+
+Desktop (1025px+):
+
+Max content width 1100px centered
+Pet area and stats area equal and balanced
+Generous whitespace, nothing cramped
+
+Battle Mode responsive:
+
+Mobile: pets stack top and bottom with VS divider between
+Tablet/Desktop: pets side by side with VS in center
+
+Use Tailwind responsive prefixes (sm: md: lg:) for everything. Test every breakpoint.
+
+2. VISUAL POLISH — 10/10
+Background:
+
+Deep animated gradient that slowly shifts: #0a0a0f → #0d1117 → #0a0f0a
+Twinkling star particles (at least 50 stars, random sizes, random twinkle timing)
+Very faint scanline overlay for retro feel (3px repeating gradient, 3% opacity)
+
+Typography:
+
+Title "VibeGotchi" — larger, with animated rainbow pixel glow that cycles colors slowly
+All pixel font labels use Press Start 2P
+All body text uses Inter — clean and modern contrast
+Vibe quote — italic, muted green, larger than other stats
+
+Buttons:
+
+Summon button: animated gradient background (green → emerald → green cycling)
+Hover: scale 1.05 + brightness increase
+Active/press: scale 0.97
+All buttons have smooth 200ms transitions
+
+Cards:
+
+Stats panel: glassmorphism effect — backdrop-blur, semi-transparent dark bg, subtle border with glow
+Leaderboard rows: hover lift effect with subtle glow
+All corners rounded-2xl
+
+Pet sprite improvements:
+
+Make pet 50% larger than current size
+Smooth continuous floating animation (up 8px down 8px, 2 second cycle)
+Eyes blink every 3 seconds (CSS animation)
+Legend stage: golden particle ring orbiting the pet
+Dead/ghost stage: flickering opacity animation + greyscale filter
+Baby stage: slight wobble left-right
+Teen stage: energetic faster bounce
+Adult stage: confident slow pulse glow
+
+
+3. BATTLE MODE — FULLY COMPLETE
+UI:
+
+Home screen has two tabs: Solo and Battle 🥊
+Battle tab shows two input fields labeled Fighter 1 and Fighter 2
+One big "START BATTLE ⚔️" button
+Both pets load simultaneously with a loading egg each
+
+Battle result:
+
+Both pets render side by side (or stacked on mobile) with VS glowing in center
+Stats compared line by line — winning stat highlighted green, losing stat red
+After 2 seconds: winner pet does victory bounce animation + golden crown appears
+Loser pet droops + gets sad eyes + grey filter
+Winner banner appears: "🏆 [username] WINS! Their pet obliterates [username2]'s ghost"
+Loser message: "💀 [username2] needs to touch a keyboard"
+Share text: "My VibeGotchi just destroyed @[loser] in a pet battle 🔥 Check yours at [url]"
+
+
+4. SOUND DESIGN — WEB AUDIO API ONLY
+Create all sounds programmatically using Web Audio API (no audio files needed):
+
+Summon click: short bright "click" tone
+Loading complete / pet appears: ascending 3-note chime (C-E-G)
+Legend pet: majestic 4-note fanfare
+Dead pet: descending sad "wah wah" tone
+Battle win: victory 5-note melody
+Battle lose: sad trombone 3-note drop
+Stat bar fill: subtle sweep sound as bars animate
+Share button: satisfying "pop" confirmation tone
+
+Mute toggle button fixed top-right corner: 🔊 / 🔇
+Default: sound ON
+Save mute preference to localStorage
+
+5. PET NAME GENERATOR — UNIQUE EVERY TIME
+Generate a unique pet name from username + language + stage:
+javascriptconst prefixes = {
+  python: ["Pyro", "Serpentine", "Pythora", "Wyrmcode"],
+  javascript: ["Jscribe", "Nodeling", "Asyncra", "Promisio"],
+  typescript: ["Typheus", "Strictra", "Infernus", "Generico"],
+  rust: ["Ferris", "Oxidus", "Borrowck", "Lifetima"],
+  go: ["Goroutine", "Gopher", "Concurra", "Channelio"],
+  default: ["Commitron", "Pushling", "Mergeling", "Rebasura"]
+}
+const suffixes = ["the Mighty", "of the Void", "the Undeployed", 
+"the Legendary", "who Ships", "the Sleeper", "of Main Branch"]
+Display pet name in pixel font above pet, smaller than username, muted color.
+
+6. EVOLUTION REVEAL ANIMATION
+When pet first loads after summoning:
+
+Start with cracked egg (same as loading state)
+Egg shakes violently for 0.5 seconds
+Bright flash (white overlay fades out)
+Pet appears with scale spring animation (0 → 1.2 → 1.0)
+Sparkle particles burst outward
+Pet name fades in with glow
+Stats panel slides up from below
+Total duration: 2 seconds max
+
+
+7. ROTATING FUNNY LOADING MESSAGES
+Cycle through these every 1.5 seconds during loading:
+
+"Bribing GitHub for your data... 💸"
+"Counting commits... this may take a while for some of you... 👀"
+"Consulting the ancient git logs... 📜"
+"Your pet is being summoned from the void... 🌀"
+"Checking if you actually ship or just open issues... 🤔"
+"Analyzing your 3am commit messages... 🌙"
+"Determining if your pet deserves to live... ⚖️"
+"Reading between the WIP commits... 🔍"
+
+
+8. LIVE AUTO-REFRESH
+While pet screen is showing:
+
+Re-fetch GitHub data silently every 30 seconds
+If stats changed: animate the change (bar grows/shrinks smoothly)
+Small indicator bottom of screen: "🔄 Last synced: just now" — updates each refresh
+If user just committed: show toast "🎉 New commit detected! Your pet just got fed!"
+
+
+9. PERSONALITY EVERYWHERE
+Every single text in the app must have personality:
+Empty leaderboard: "Desolate in here. Your pet could be #1 by default. Embarrassing for everyone else."
+Username not found: "Either this person doesn't exist, or they deleted everything out of shame. Both are valid."
+Rate limited: "GitHub is being dramatic. Try again in a moment. It's not you, it's them."
+0 commits 30 days: "Your pet hasn't eaten in weeks. This isn't a pet anymore. This is a cry for help."
+Legend stage unlock: "LEGENDARY STATUS ACHIEVED. Your pet has transcended. Touch grass immediately."
+Share copied toast: "Copied! Go flex on your feed. You've earned it. 💚"
+Footer: "No pets were harmed in the making of this app. Some developers were. 🐾"
+
+10. SEO AND META TAGS
+In the Next.js layout.tsx add:
+title: "VibeGotchi 🐾 — Your GitHub commits. Your creature."
+description: "Paste any GitHub username and watch your coding life become a virtual pet. Ship code or it dies."
+og:title: "VibeGotchi 🐾"
+og:description: "Your GitHub commits. Your creature. Don't let it die."
+og:image: "/og-image.png" 
+twitter:card: "summary_large_image"
+Create a simple og-image: dark background, VibeGotchi logo, a sample pet, tagline. Save as public/og-image.png
+
+11. LEADERBOARD IMPROVEMENTS
+
+Sort by level descending
+Show top 20 (not just 10)
+Each row shows: rank, avatar, username, pet name, stage badge, level, mood, vibe one-liner
+Stage badges color coded:
+
+egg → grey
+baby → green
+teen → blue
+adult → purple
+legend → gold with glow animation
+
+
+Clicking any row goes to that pet's page directly
+"Clear leaderboard" button at bottom (small, muted)
+Animate rows in with stagger effect on page load
+
+
+12. FINAL QUALITY CHECKLIST
+After building everything above, verify:
+
+ App works on Chrome, Safari, Firefox
+ No console errors
+ All loading states show (never blank screen)
+ All error states show (never raw error)
+ Share button copies correct text
+ Leaderboard persists after page refresh
+ Sound mute preference persists after page refresh
+ Auto-refresh works (test by committing to GitHub while app is open)
+ Battle mode works with any two valid usernames
+ Pet name generates correctly for every language
+ Evolution animation plays every time on first load
+ Mobile layout perfect at 320px, 375px, 414px
+ Tablet layout perfect at 768px, 1024px
+ Desktop layout perfect at 1280px, 1440px, 1920px
+
+Build everything completely. This is the final version. Make it perfect.

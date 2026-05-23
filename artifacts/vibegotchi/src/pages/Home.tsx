@@ -67,6 +67,7 @@ export default function Home() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [timeAgo, setTimeAgo] = useState("");
+  const [showCommitToast, setShowCommitToast] = useState(false);
 
   function handleToggleMute() {
     const nowMuted = sounds.toggle();
@@ -106,7 +107,13 @@ export default function Home() {
         data.recentCommitMessages, data.topLanguage,
         data.commitCount30Days, data.daysSinceLastCommit,
       );
-      setPetData(data);
+      setPetData((prev) => {
+        if (prev && data.commitCount30Days > prev.commitCount30Days) {
+          setShowCommitToast(true);
+          setTimeout(() => setShowCommitToast(false), 4500);
+        }
+        return data;
+      });
       setVibeResult(vibe);
       setLastUpdated(new Date());
     } catch (_) {
@@ -138,16 +145,12 @@ export default function Home() {
     return () => clearInterval(id);
   }, [lastUpdated]);
 
-  const handleSummon = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmed = username.trim();
-    if (!trimmed) return;
-    sounds.click();
+  const doFetch = useCallback(async (u: string) => {
     setPhase("loading");
     setError(null);
 
     try {
-      const data = await fetchGitHubPetData(trimmed);
+      const data = await fetchGitHubPetData(u);
       setPetData(data);
 
       const vibe = await analyzeVibe(
@@ -167,6 +170,7 @@ export default function Home() {
         stage: stg,
         level: lvl,
         mood: `${mood.emoji} ${mood.label}`,
+        petName: name,
         timestamp: Date.now(),
       });
 
@@ -174,15 +178,40 @@ export default function Home() {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "GENERIC";
       if (msg === "USER_NOT_FOUND") {
-        setError({ type: "not_found", message: "Either this person doesn't exist or they deleted everything out of shame." });
+        setError({ type: "not_found", message: "Either this person doesn't exist, or they deleted everything out of shame. Both are valid." });
       } else if (msg === "RATE_LIMITED") {
-        setError({ type: "rate_limited", message: "GitHub is being shy. Try again in a moment." });
+        setError({ type: "rate_limited", message: "GitHub is being dramatic. Try again in a moment. It's not you, it's them." });
       } else {
-        setError({ type: "generic", message: "Something went wrong in the void. Try again." });
+        setError({ type: "generic", message: "Something exploded in the git void. Try again." });
       }
       setPhase("error");
     }
-  }, [username]);
+  }, []);
+
+  const handleSummon = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = username.trim();
+    if (!trimmed) return;
+    sounds.click();
+    await doFetch(trimmed);
+  }, [username, doFetch]);
+
+  // Auto-summon from ?u=username or switch to battle on ?battle=1
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const u = params.get("u");
+    const b = params.get("battle");
+    if (b === "1") {
+      setMode("battle");
+    }
+    if (u && u.trim()) {
+      setUsername(u.trim());
+      doFetch(u.trim());
+    }
+    if (u || b) {
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleReset() {
     setPhase("input");
@@ -193,7 +222,7 @@ export default function Home() {
   }
 
   const commitWarning = petData?.commitCount30Days === 0
-    ? "Your pet hasn't eaten in weeks. This is a cry for help."
+    ? "Your pet hasn't eaten in weeks. This isn't a pet anymore. This is a cry for help."
     : null;
 
   return (
@@ -217,8 +246,7 @@ export default function Home() {
         className="relative text-center mb-4 sm:mb-6 w-full max-w-lg"
       >
         <h1
-          className="font-pixel text-2xl sm:text-3xl text-white mb-2"
-          style={{ textShadow: "0 0 20px rgba(57,255,20,0.5), 0 0 40px rgba(147,51,234,0.3)" }}
+          className="font-pixel text-2xl sm:text-3xl text-white mb-2 animate-rainbow-glow"
           data-testid="text-title"
         >
           VibeGotchi
@@ -290,8 +318,7 @@ export default function Home() {
                 disabled={!username.trim()}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="w-full py-3.5 rounded-xl font-semibold text-sm text-black transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ backgroundColor: "var(--neon-green)" }}
+                className="w-full py-3.5 rounded-xl font-semibold text-sm text-black transition-all disabled:opacity-40 disabled:cursor-not-allowed btn-summon"
               >
                 Summon My Pet
               </motion.button>
@@ -463,6 +490,13 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Commit toast */}
+      {showCommitToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 toast-commit px-5 py-3 rounded-xl glass border border-[--neon-green]/30 text-sm text-white whitespace-nowrap">
+          🎉 New commit detected! Your pet just got fed!
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="relative mt-auto pt-12 pb-2 text-center flex flex-col gap-2">

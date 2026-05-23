@@ -5,7 +5,12 @@ export interface LeaderboardEntry {
   stage: string;
   level: number;
   mood: string;
+  petName?: string;
   timestamp: number;
+}
+
+export function clearLeaderboard(): void {
+  try { localStorage.removeItem(KEY); } catch { /* noop */ }
 }
 
 export function saveToLeaderboard(entry: LeaderboardEntry): void {

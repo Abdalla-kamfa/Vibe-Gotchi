@@ -75,7 +75,37 @@ class SoundEngine {
   }
 
   victory(): void {
-    [784, 988, 1175, 1568].forEach((f, i) => this.tone(f, "triangle", 0.22, 0.28, i * 0.09));
+    [784, 988, 1175, 1318, 1568].forEach((f, i) => this.tone(f, "triangle", 0.24, 0.28, i * 0.09));
+  }
+
+  defeat(): void {
+    this.tone(440, "sine", 0.4, 0.22, 0);
+    this.tone(349, "sine", 0.4, 0.22, 0.25);
+    this.tone(294, "sine", 0.5, 0.22, 0.5);
+  }
+
+  sharePop(): void {
+    this.tone(880, "sine", 0.08, 0.25);
+    this.tone(1100, "sine", 0.07, 0.2, 0.05);
+    this.tone(1320, "sine", 0.06, 0.18, 0.1);
+  }
+
+  statFill(): void {
+    if (this._muted) return;
+    try {
+      const ctx = this.getCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(300, ctx.currentTime);
+      osc.frequency.linearRampToValueAtTime(800, ctx.currentTime + 0.7);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.75);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.76);
+    } catch (_) {}
   }
 }
 

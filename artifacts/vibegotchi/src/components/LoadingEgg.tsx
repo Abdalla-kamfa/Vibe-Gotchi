@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const MESSAGES = [
-  "Bribing GitHub for your data...",
-  "Counting commits... this may take a while for some of you...",
-  "Consulting the ancient git logs...",
-  "Your pet is being summoned from the void...",
-  "Checking if you actually committed anything...",
-  "Scanning blame history... stay calm...",
+  "Bribing GitHub for your data... 💸",
+  "Counting commits... this may take a while for some of you... 👀",
+  "Consulting the ancient git logs... 📜",
+  "Your pet is being summoned from the void... 🌀",
+  "Checking if you actually ship or just open issues... 🤔",
+  "Analyzing your 3am commit messages... 🌙",
+  "Determining if your pet deserves to live... ⚖️",
+  "Reading between the WIP commits... 🔍",
 ];
 
 export function LoadingEgg() {
@@ -16,7 +18,7 @@ export function LoadingEgg() {
   useEffect(() => {
     const id = setInterval(() => {
       setMsgIndex((i) => (i + 1) % MESSAGES.length);
-    }, 2000);
+    }, 1500);
     return () => clearInterval(id);
   }, []);
 
@@ -78,7 +80,7 @@ export function LoadingEgg() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35 }}
+            transition={{ duration: 0.3 }}
           >
             {MESSAGES[msgIndex]}
           </motion.p>

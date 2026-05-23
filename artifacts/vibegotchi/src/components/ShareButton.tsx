@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Share2, Check } from "lucide-react";
+import { sounds } from "../lib/sounds";
 
 interface ShareButtonProps {
   level: number;
@@ -13,22 +14,20 @@ export function ShareButton({ level, stage, moodEmoji, moodLabel }: ShareButtonP
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
-    const text = `My VibeGotchi is a Level ${level} ${stage} with ${moodEmoji} ${moodLabel} energy. See yours at vibegotchi.replit.app`;
+    const text = `My VibeGotchi is a Level ${level} ${stage} with ${moodEmoji} ${moodLabel} energy. See yours at vibegotchi.app`;
     try {
       await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
     } catch {
-      // fallback
       const el = document.createElement("textarea");
       el.value = text;
       document.body.appendChild(el);
       el.select();
       document.execCommand("copy");
       document.body.removeChild(el);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
     }
+    sounds.sharePop();
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
   };
 
   return (

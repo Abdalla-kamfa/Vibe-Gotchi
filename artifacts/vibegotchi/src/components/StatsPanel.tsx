@@ -57,7 +57,7 @@ export function StatsPanel({
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:p-5 flex flex-col gap-3 sm:gap-4"
+      className="rounded-2xl glass p-4 sm:p-5 flex flex-col gap-3 sm:gap-4"
     >
       <div className="flex items-center justify-between">
         <h3 className="font-pixel text-[10px] text-white/70 tracking-widest uppercase">Stats</h3>

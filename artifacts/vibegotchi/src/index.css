@@ -216,8 +216,8 @@
     0deg,
     transparent,
     transparent 3px,
-    rgba(0, 0, 0, 0.04) 3px,
-    rgba(0, 0, 0, 0.04) 4px
+    rgba(0, 0, 0, 0.03) 3px,
+    rgba(0, 0, 0, 0.03) 4px
   );
   pointer-events: none;
 }
@@ -227,8 +227,82 @@
   font-family: var(--app-font-press-start), cursive;
 }
 
+/* Animated deep-space background */
+@keyframes bg-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 .bg-space {
-  background: linear-gradient(180deg, #0a0a0f 0%, #0d1117 100%);
+  background: linear-gradient(-45deg, #0a0a0f, #0d1117, #080d10, #0a0f0a, #0a0a0f);
+  background-size: 400% 400%;
+  animation: bg-shift 28s ease infinite;
+}
+
+/* Rainbow title glow */
+@keyframes rainbow-glow {
+  0%   { text-shadow: 0 0 18px rgba(57,255,20,0.8),  0 0 36px rgba(57,255,20,0.4); }
+  20%  { text-shadow: 0 0 18px rgba(147,51,234,0.8), 0 0 36px rgba(147,51,234,0.4); }
+  40%  { text-shadow: 0 0 18px rgba(59,130,246,0.8), 0 0 36px rgba(59,130,246,0.4); }
+  60%  { text-shadow: 0 0 18px rgba(251,191,36,0.8), 0 0 36px rgba(251,191,36,0.4); }
+  80%  { text-shadow: 0 0 18px rgba(239,68,68,0.8),  0 0 36px rgba(239,68,68,0.4); }
+  100% { text-shadow: 0 0 18px rgba(57,255,20,0.8),  0 0 36px rgba(57,255,20,0.4); }
+}
+.animate-rainbow-glow {
+  animation: rainbow-glow 7s linear infinite;
+}
+
+/* Animated summon button */
+@keyframes btn-gradient {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.btn-summon {
+  background: linear-gradient(-45deg, #39ff14, #22c55e, #4ade80, #16a34a, #39ff14);
+  background-size: 300% 300%;
+  animation: btn-gradient 3.5s ease infinite;
+  transition: filter 0.2s, transform 0.15s;
+}
+.btn-summon:hover  { filter: brightness(1.15); }
+.btn-summon:active { transform: scale(0.97); }
+
+/* Glassmorphism panel */
+.glass {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* Legend badge glow */
+@keyframes legend-badge-glow {
+  0%, 100% { box-shadow: 0 0 6px rgba(251,191,36,0.5); }
+  50%       { box-shadow: 0 0 14px rgba(251,191,36,0.9), 0 0 28px rgba(251,191,36,0.4); }
+}
+.legend-badge-glow {
+  animation: legend-badge-glow 1.8s ease-in-out infinite;
+}
+
+/* Ghost / dead pet greyscale flicker */
+@keyframes ghost-flicker {
+  0%, 95%, 100% { opacity: 0.7; filter: grayscale(0.8); }
+  96%           { opacity: 0.3; filter: grayscale(1); }
+  97%           { opacity: 0.7; filter: grayscale(0.8); }
+  98%           { opacity: 0.4; filter: grayscale(1); }
+}
+.ghost-pet {
+  animation: ghost-flicker 3.5s infinite;
+}
+
+/* Commit toast */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.toast-commit {
+  animation: toast-in 0.3s ease-out;
 }
 
 @layer utilities {

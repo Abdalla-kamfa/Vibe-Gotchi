@@ -327,7 +327,22 @@ function AccessoryOverlay({ accessories, stage, streakDays = 0 }: { accessories:
   );
 }
 
+const STAGE_BOUNCE: Record<PetStage, {
+  animate: Record<string, number[]>;
+  duration: number;
+}> = {
+  egg:    { animate: { y: [0, -5,  0], scaleX: [1, 1.01, 1], scaleY: [1, 0.99, 1] }, duration: 3.2 },
+  baby:   { animate: { y: [0, -9,  0], scaleX: [1, 1.02, 1], scaleY: [1, 0.98, 1], rotate: [-1.5, 1.5, -1.5] }, duration: 2.3 },
+  teen:   { animate: { y: [0, -16, 0], scaleX: [1, 1.07, 1], scaleY: [1, 0.93, 1] }, duration: 1.25 },
+  adult:  { animate: { y: [0, -10, 0], scaleX: [1, 1.03, 1], scaleY: [1, 0.97, 1] }, duration: 2.7 },
+  legend: { animate: { y: [0, -20, 0], scaleX: [1, 1.08, 1], scaleY: [1, 0.92, 1] }, duration: 1.8 },
+};
+
 export function PetSprite({ stage, colors, accessories, streakDays = 0 }: PetSpriteProps) {
+  const bounce   = STAGE_BOUNCE[stage];
+  const isGhost  = accessories.includes("skull");
+  const isLegend = stage === "legend";
+
   return (
     <motion.div
       data-testid="pet-sprite"
@@ -336,26 +351,31 @@ export function PetSprite({ stage, colors, accessories, streakDays = 0 }: PetSpr
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
       className="flex items-center justify-center"
     >
-      <motion.div
-        animate={{ y: [0, -18, 0], scaleX: [1, 1.04, 1], scaleY: [1, 0.96, 1] }}
-        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <svg
-          width="280"
-          height="280"
-          viewBox="0 0 200 200"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ overflow: "visible" }}
+      {/* Legend orbital ring wrapper */}
+      <div className={`relative ${isLegend ? "legend-particles" : ""}`}>
+        <motion.div
+          animate={bounce.animate}
+          transition={{ duration: bounce.duration, repeat: Infinity, ease: "easeInOut" }}
+          className={isGhost ? "ghost-pet" : undefined}
+          style={isLegend ? { filter: `drop-shadow(0 0 12px ${colors.accent}88)` } : undefined}
         >
-          {stage === "egg"    && <EggPet colors={colors} />}
-          {stage === "baby"   && <BabyPet colors={colors} />}
-          {stage === "teen"   && <TeenPet colors={colors} />}
-          {stage === "adult"  && <AdultPet colors={colors} />}
-          {stage === "legend" && <LegendPet colors={colors} />}
-          <AccessoryOverlay accessories={accessories} stage={stage} streakDays={streakDays} />
-        </svg>
-      </motion.div>
+          <svg
+            width="280"
+            height="280"
+            viewBox="0 0 200 200"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ overflow: "visible" }}
+          >
+            {stage === "egg"    && <EggPet colors={colors} />}
+            {stage === "baby"   && <BabyPet colors={colors} />}
+            {stage === "teen"   && <TeenPet colors={colors} />}
+            {stage === "adult"  && <AdultPet colors={colors} />}
+            {stage === "legend" && <LegendPet colors={colors} />}
+            <AccessoryOverlay accessories={accessories} stage={stage} streakDays={streakDays} />
+          </svg>
+        </motion.div>
+      </div>
     </motion.div>
   );
 }
