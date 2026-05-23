@@ -21,21 +21,6 @@ export interface VibeInput {
 }
 
 /**
- * One-word personality type
- */
-export type VibeResultPetPersonality = typeof VibeResultPetPersonality[keyof typeof VibeResultPetPersonality];
-
-
-export const VibeResultPetPersonality = {
-  Chaotic: 'Chaotic',
-  Disciplined: 'Disciplined',
-  Sleepy: 'Sleepy',
-  Feral: 'Feral',
-  Legendary: 'Legendary',
-  Ghost: 'Ghost',
-} as const;
-
-/**
  * Whether to boost the mood display
  */
 export type VibeResultMoodBoost = typeof VibeResultMoodBoost[keyof typeof VibeResultMoodBoost];
@@ -50,8 +35,8 @@ export const VibeResultMoodBoost = {
 export interface VibeResult {
   /** Punchy, funny one-liner about the developer (max 60 chars) */
   vibeOneLiner: string;
-  /** One-word personality type */
-  petPersonality: VibeResultPetPersonality;
+  /** Personality label for the pet (e.g. Legendary, Ghost, Night Owl) */
+  petPersonality: string;
   /** Whether to boost the mood display */
   moodBoost: VibeResultMoodBoost;
 }

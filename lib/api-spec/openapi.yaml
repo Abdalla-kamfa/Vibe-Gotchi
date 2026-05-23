@@ -94,8 +94,7 @@ components:
           description: Punchy, funny one-liner about the developer (max 60 chars)
         petPersonality:
           type: string
-          description: One-word personality type
-          enum: [Chaotic, Disciplined, Sleepy, Feral, Legendary, Ghost]
+          description: Personality label for the pet (e.g. Legendary, Ghost, Night Owl)
         moodBoost:
           type: string
           description: Whether to boost the mood display

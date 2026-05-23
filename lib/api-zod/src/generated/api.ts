@@ -30,7 +30,7 @@ export const AnalyzeVibeBody = zod.object({
 
 export const AnalyzeVibeResponse = zod.object({
   "vibeOneLiner": zod.string().describe('Punchy, funny one-liner about the developer (max 60 chars)'),
-  "petPersonality": zod.enum(['Chaotic', 'Disciplined', 'Sleepy', 'Feral', 'Legendary', 'Ghost']).describe('One-word personality type'),
+  "petPersonality": zod.string().describe('Personality label for the pet (e.g. Legendary, Ghost, Night Owl)'),
   "moodBoost": zod.enum(['positive', 'neutral', 'negative']).describe('Whether to boost the mood display')
 })
 

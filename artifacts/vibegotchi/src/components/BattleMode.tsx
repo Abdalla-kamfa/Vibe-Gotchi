@@ -139,6 +139,11 @@ export function BattleMode() {
   const handleBattle = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username1.trim() || !username2.trim()) return;
+    if (username1.trim().toLowerCase() === username2.trim().toLowerCase()) {
+      setErrorMsg("Fighting yourself? Bold strategy. Try a different opponent — this one is too cowardly to fight back.");
+      setPhase("error");
+      return;
+    }
     setPhase("loading");
     setShowResult(false);
     sounds.battle();

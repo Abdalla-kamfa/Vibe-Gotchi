@@ -11,4 +11,3 @@ export * from './healthStatus';
 export * from './vibeInput';
 export * from './vibeResult';
 export * from './vibeResultMoodBoost';
-export * from './vibeResultPetPersonality';

@@ -6,13 +6,12 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { VibeResultMoodBoost } from './vibeResultMoodBoost';
-import type { VibeResultPetPersonality } from './vibeResultPetPersonality';
 
 export interface VibeResult {
   /** Punchy, funny one-liner about the developer (max 60 chars) */
   vibeOneLiner: string;
-  /** One-word personality type */
-  petPersonality: VibeResultPetPersonality;
+  /** Personality label for the pet (e.g. Legendary, Ghost, Night Owl) */
+  petPersonality: string;
   /** Whether to boost the mood display */
   moodBoost: VibeResultMoodBoost;
 }

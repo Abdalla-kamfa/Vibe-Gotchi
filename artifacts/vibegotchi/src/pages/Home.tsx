@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "wouter";
 import { fetchGitHubPetData, type GitHubPetData } from "../lib/github";
@@ -131,6 +131,8 @@ export default function Home() {
   const [vibeResult, setVibeResult] = useState<VibeResult | null>(null);
   const [petName, setPetName] = useState("");
   const [error, setError] = useState<ErrorState | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const isSubmitting = useRef(false);
   const [muted, setMuted] = useState(sounds.muted);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -264,9 +266,15 @@ export default function Home() {
   const handleSummon = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = username.trim();
-    if (!trimmed) return;
+    if (!trimmed || isSubmitting.current) return;
+    isSubmitting.current = true;
+    inputRef.current?.blur(); // dismiss mobile keyboard
     sounds.click();
-    await doFetch(trimmed);
+    try {
+      await doFetch(trimmed);
+    } finally {
+      isSubmitting.current = false;
+    }
   }, [username, doFetch]);
 
   // Auto-summon from ?u=username or switch to battle on ?battle=1
@@ -425,6 +433,7 @@ export default function Home() {
           >
             <form onSubmit={handleSummon} className="w-full flex flex-col gap-3">
               <input
+                ref={inputRef}
                 data-testid="input-username"
                 type="text"
                 value={username}

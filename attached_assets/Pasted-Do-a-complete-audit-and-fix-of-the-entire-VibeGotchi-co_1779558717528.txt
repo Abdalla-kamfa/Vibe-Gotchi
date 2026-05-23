@@ -1,0 +1,127 @@
+Do a complete audit and fix of the entire VibeGotchi codebase. This is a competition submission being judged on Monday — zero bugs allowed.
+BUG FIXES
+1. OpenAI quota error
+The app is showing OpenAI quota errors. Make the fallback system bulletproof:
+
+If OpenAI call fails for ANY reason (quota, network, timeout), silently use rule-based vibe generation
+Never show any OpenAI error to the user ever
+Rule-based fallbacks must be funny and varied — at least 20 different vibe lines in the fallback array
+Fallback vibe lines examples:
+
+"Commits at 2am and calls it 'minor fixes'"
+"Opens 12 tabs of Stack Overflow simultaneously"
+"Types fast, thinks faster, documents never"
+"Git history is a crime scene"
+"Lives on the main branch. No regrets."
+"WIP commits are a personality trait"
+"Closes issues by deleting the repo"
+"Ship first, fix never"
+"README? Never heard of her."
+"Force pushes to main with confidence"
+
+
+
+2. Pet stage calculation
+Verify and fix the stage calculation logic:
+
+0 commits in 30 days → egg (grey, sad)
+1-5 commits → baby
+6-20 commits → teen
+21-50 commits → adult
+51+ commits → legend
+Test with torvalds (should be legend), a new account (should be egg).
+
+3. GitHub rate limiting
+
+Add proper rate limit detection from GitHub API headers
+If rate limited: show friendly message with estimated wait time
+Add GITHUB_TOKEN to env vars usage — check if it exists and use it for higher limits
+Never crash the app on rate limit
+
+4. localStorage errors
+
+Wrap ALL localStorage reads and writes in try/catch
+Some browsers block localStorage in private mode — app must work without it
+Leaderboard gracefully shows empty state if localStorage unavailable
+
+5. Mobile keyboard issues
+
+When user submits on mobile keyboard, dismiss the keyboard after submission
+Input should blur() after form submit on mobile
+Prevent double-submit if user taps button twice quickly — add debounce
+
+6. Battle mode edge cases
+
+If same username entered twice: show funny message "Fighting yourself? Bold strategy."
+If one username doesn't exist: show which one failed clearly
+If both fail: clear error state
+
+7. Share button
+
+Test clipboard API works on all browsers
+Fallback: if clipboard API fails, show a text area with the text selected so user can manually copy
+Share text should include the actual Vercel URL not localhost
+
+8. Auto-refresh
+
+Make sure the 30 second auto-refresh doesn't fire if user has navigated away from pet screen
+Cancel the interval on component unmount to prevent memory leaks
+
+FILE ARCHITECTURE CLEANUP
+Reorganize and clean up the codebase:
+src/
+  components/
+    pet/
+      PetSprite.tsx        ← animated pet creature
+      PetCard.tsx          ← wrapper card with glow
+      MoodBadge.tsx        ← mood display
+      PetName.tsx          ← name + personality badge
+    stats/
+      StatsPanel.tsx       ← full stats card
+      StatCell.tsx         ← individual stat
+      ProgressBar.tsx      ← animated bar
+    battle/
+      BattleMode.tsx       ← battle container
+      BattleResult.tsx     ← winner/loser display
+      BattleCry.tsx        ← funny result text
+    leaderboard/
+      Leaderboard.tsx      ← page
+      LeaderboardRow.tsx   ← single entry
+    ui/
+      LoadingEgg.tsx       ← loading animation
+      ShareButton.tsx      ← copy to clipboard
+      ErrorState.tsx       ← error display
+      Toast.tsx            ← notifications
+  lib/
+    github.ts              ← all GitHub API calls
+    petLogic.ts            ← stage/mood/outfit calculation
+    openai.ts              ← AI call + fallback
+    sounds.ts              ← Web Audio API
+    storage.ts             ← localStorage wrapper with try/catch
+    shareText.ts           ← share message generation
+  pages/
+    Home.tsx               ← main page
+    LeaderboardPage.tsx    ← leaderboard page
+  types/
+    pet.ts                 ← all TypeScript interfaces
+    github.ts              ← GitHub API types
+  constants/
+    petStages.ts           ← stage thresholds
+    vibeLines.ts           ← fallback vibe lines array
+    outfits.ts             ← language → outfit mapping
+Clean up any unused imports, remove any console.log statements, fix any TypeScript any types.
+PERFORMANCE
+
+Memoize expensive calculations with useMemo
+Memoize components that don't need to re-render with React.memo
+Cancel all fetch requests on component unmount using AbortController
+Add error boundaries around pet display and battle mode
+
+FINAL CHECKS
+After all fixes:
+
+Run TypeScript check — zero errors
+Run through complete user flow: land → enter username → see pet → share → leaderboard → battle
+Test with: torvalds, sindresorhus, a nonexistent username, roastme
+Push to GitHub
+Confirm Vercel deploys with zero errors
