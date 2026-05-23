@@ -1,23 +1,36 @@
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+const MESSAGES = [
+  "Bribing GitHub for your data...",
+  "Counting commits... this may take a while for some of you...",
+  "Consulting the ancient git logs...",
+  "Your pet is being summoned from the void...",
+  "Checking if you actually committed anything...",
+  "Scanning blame history... stay calm...",
+];
 
 export function LoadingEgg() {
+  const [msgIndex, setMsgIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setMsgIndex((i) => (i + 1) % MESSAGES.length);
+    }, 2000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <div className="flex flex-col items-center gap-6 py-10" data-testid="loading-egg">
       <motion.div
         className="relative"
-        animate={{
-          y: [0, -8, 0],
-          rotate: [-3, 3, -3],
-        }}
+        animate={{ y: [0, -8, 0], rotate: [-3, 3, -3] }}
         transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
       >
         <svg width="120" height="140" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Egg body */}
           <ellipse cx="60" cy="75" rx="45" ry="58" fill="#1e1e2e" stroke="#444466" strokeWidth="2" />
-          {/* Crack lines */}
           <path d="M50 40 L55 55 L48 65 L58 80" stroke="#6b6b9a" strokeWidth="1.5" strokeLinecap="round" />
           <path d="M70 45 L66 58 L72 68" stroke="#6b6b9a" strokeWidth="1.5" strokeLinecap="round" />
-          {/* Eyes */}
           <motion.g
             animate={{ scaleY: [1, 0.1, 1] }}
             transition={{ duration: 3.5, repeat: Infinity, repeatDelay: 1 }}
@@ -28,9 +41,7 @@ export function LoadingEgg() {
             <circle cx="44" cy="72" r="2" fill="#222233" />
             <circle cx="72" cy="72" r="2" fill="#222233" />
           </motion.g>
-          {/* Sad mouth */}
           <path d="M50 90 Q60 86 70 90" stroke="#888899" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-          {/* Shimmer overlay */}
           <motion.ellipse
             cx="60" cy="75" rx="45" ry="58"
             fill="url(#shimmer)"
@@ -47,7 +58,6 @@ export function LoadingEgg() {
         </svg>
       </motion.div>
 
-      {/* Skeleton shimmer stats */}
       <div className="flex flex-col gap-3 w-full max-w-xs">
         {[0.9, 0.7, 0.8, 0.6].map((w, i) => (
           <motion.div
@@ -60,13 +70,20 @@ export function LoadingEgg() {
         ))}
       </div>
 
-      <motion.p
-        className="text-sm text-white/50 text-center"
-        animate={{ opacity: [0.4, 1, 0.4] }}
-        transition={{ duration: 1.8, repeat: Infinity }}
-      >
-        Reading your commits... summoning your creature...
-      </motion.p>
+      <div className="h-10 flex items-center justify-center">
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={msgIndex}
+            className="text-sm text-white/50 text-center max-w-xs px-4"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.35 }}
+          >
+            {MESSAGES[msgIndex]}
+          </motion.p>
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

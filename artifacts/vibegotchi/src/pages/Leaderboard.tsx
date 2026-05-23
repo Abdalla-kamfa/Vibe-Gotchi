@@ -12,7 +12,7 @@ export default function Leaderboard() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-space flex flex-col items-center px-4 py-8">
+    <div className="relative min-h-screen bg-space flex flex-col items-center px-4 py-8">
       <motion.div
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -44,7 +44,10 @@ export default function Leaderboard() {
               <circle cx="60" cy="57" r="5" fill="#444466" />
               <path d="M38 72 Q50 68 62 72" stroke="#444466" strokeWidth="2" strokeLinecap="round" fill="none" />
             </svg>
-            <p className="text-sm text-white/40 text-center">No pets summoned yet. Be the first.</p>
+            <p className="text-sm text-white/50 text-center max-w-xs">
+              Lonely in here. Your pet could be #1 by default.
+            </p>
+            <p className="text-xs text-white/25 text-center">Go summon one. The void is watching.</p>
           </motion.div>
         ) : (
           entries.map((entry, i) => (
@@ -70,6 +73,18 @@ export default function Leaderboard() {
           </motion.span>
         </Link>
       </motion.div>
+
+      {/* Footer */}
+      <footer className="mt-16 text-center flex flex-col gap-2">
+        <p className="text-xs text-white/20 italic">No pets were harmed in the making of this app. Some developers were.</p>
+        <div className="flex gap-4 justify-center">
+          <Link href="/" className="text-xs text-white/25 hover:text-white/50 transition-colors">Home</Link>
+          <span className="text-white/15">·</span>
+          <Link href="/leaderboard" className="text-xs text-white/25 hover:text-white/50 transition-colors">Leaderboard</Link>
+          <span className="text-white/15">·</span>
+          <Link href="/battle" className="text-xs text-white/25 hover:text-white/50 transition-colors">Battle</Link>
+        </div>
+      </footer>
     </div>
   );
 }

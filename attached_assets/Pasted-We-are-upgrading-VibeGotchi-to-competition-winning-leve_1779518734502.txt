@@ -1,0 +1,78 @@
+We are upgrading VibeGotchi to competition-winning level. Implement ALL of these:
+1. COMPARE MODE — highest priority
+
+Add a toggle on the home screen: "Solo" | "Battle 🥊"
+In Battle mode: two input fields side by side
+Both pets render side by side after loading
+Stats compare with visual indicators (green = winning stat, red = losing stat)
+The pet with more commits does a victory animation (bounce + glow)
+The losing pet does a sad droop animation
+Below: "[username1] wins! Their pet destroys [username2]'s ghost 💀"
+Share button generates: "My VibeGotchi just destroyed @username in a pet battle 🔥"
+
+2. SOUND EFFECTS — using Web Audio API (no external library)
+
+Soft "pop" sound when pet appears
+Level-up chime sound when viewing a legend pet
+Sad low tone when viewing a dead/ghost pet
+Click sound on the Summon button
+All sounds must have a mute toggle button (🔊/🔇) in top right corner
+
+3. PERSONALITY THROUGHOUT
+Replace ALL generic UI text with personality:
+
+Loading: cycle through funny messages every 2 seconds:
+
+"Bribing GitHub for your data..."
+"Counting commits... this may take a while for some of you..."
+"Consulting the ancient git logs..."
+"Your pet is being summoned from the void..."
+
+
+Empty leaderboard: "Lonely in here. Your pet could be #1 by default."
+Error state: "Either this person doesn't exist or they deleted everything out of shame."
+0 commits: "Your pet hasn't eaten in weeks. This is a cry for help."
+
+4. PET NAME GENERATOR
+
+Auto-generate a unique pet name based on username + top language
+Examples: "Pyforge the Magnificent", "JSmonster", "RustBeast"
+Display above the pet in pixel font
+Makes it feel personal and shareable
+
+5. COMMIT STREAK FIRE
+
+If user has committed 3+ days in a row: show animated fire particles rising from the bottom of the pet
+More days = bigger fire
+Use CSS keyframe animations only
+
+6. EVOLUTION ANIMATION
+
+When pet first appears: play a quick evolution sequence
+Pet starts as egg → cracks → flashes → reveals final form
+Takes 1.5 seconds total
+Makes the reveal feel like a game moment
+
+7. MOBILE PERFECTION
+
+Test at exactly 375px width
+Pet should be centered and take up 60% of viewport height
+Stats scroll naturally below
+Battle mode stacks vertically on mobile (top vs bottom instead of left vs right)
+
+8. FOOTER WITH PERSONALITY
+
+Small footer: "No pets were harmed in the making of this app. Some developers were."
+Links: Home | Leaderboard | Battle
+
+9. META TAGS FOR SHARING
+
+Add proper og:title, og:description, og:image meta tags
+Title: "VibeGotchi — Your GitHub commits. Your creature."
+Description: "Paste any GitHub username and watch your coding life become a virtual pet. Don't let it die."
+
+10. PAGE TITLE
+
+Browser tab should show: VibeGotchi 🐾 not just "localhost" or "Next.js"
+
+Implement all 10 upgrades completely. Show me the result especially the Battle mode and the evolution animation.

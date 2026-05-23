@@ -5,6 +5,7 @@ interface PetSpriteProps {
   stage: PetStage;
   colors: { fill: string; accent: string };
   accessories: string[];
+  streakDays?: number;
 }
 
 function ParticleEffect({ color }: { color: string }) {
@@ -227,10 +228,14 @@ const SKULL_Y: Record<PetStage, number> = {
   egg: 72, baby: 75, teen: 62, adult: 56, legend: 48,
 };
 
-function AccessoryOverlay({ accessories, stage }: { accessories: string[]; stage: PetStage }) {
+function AccessoryOverlay({ accessories, stage, streakDays = 0 }: { accessories: string[]; stage: PetStage; streakDays?: number }) {
   const large = stage === "adult" || stage === "legend";
   const cy = large ? 35 : 50;
   const skullY = SKULL_Y[stage];
+  const flameCount = Math.min(9, 3 + Math.floor(streakDays / 2));
+  const flameXPositions = Array.from({ length: flameCount }, (_, i) =>
+    72 + (i * 56 / Math.max(1, flameCount - 1))
+  );
   return (
     <g>
       {accessories.includes("wizard_hat") && (
@@ -260,6 +265,32 @@ function AccessoryOverlay({ accessories, stage }: { accessories: string[]; stage
           <polygon points="9,0 11,6 18,6 12,10 14,17 9,13 4,17 6,10 0,6 7,6" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1" />
         </g>
       )}
+      {/* Streak fire — scales with streak length */}
+      {streakDays >= 3 && (
+        <motion.g
+          animate={{ opacity: [0.6, 1, 0.6], scaleY: [1, 1.08, 1] }}
+          transition={{ duration: 0.7, repeat: Infinity }}
+          style={{ transformOrigin: "100px 165px" }}
+        >
+          {flameXPositions.map((x, i) => {
+            const h = 22 + (streakDays >= 7 ? 10 : 0) + (streakDays >= 14 ? 8 : 0);
+            const base = 180;
+            const tip = base - h;
+            const col = streakDays >= 14 ? "#ef4444" : streakDays >= 7 ? "#f97316" : "#fb923c";
+            return (
+              <motion.path
+                key={i}
+                d={`M${x},${base} Q${x - 5},${base - h * 0.55} ${x},${tip} Q${x + 5},${base - h * 0.55} ${x + 2},${base}`}
+                fill={col}
+                opacity="0.8"
+                animate={{ d: [`M${x},${base} Q${x-5},${base-h*.55} ${x},${tip} Q${x+5},${base-h*.55} ${x+2},${base}`, `M${x},${base} Q${x+4},${base-h*.52} ${x},${tip-3} Q${x-4},${base-h*.52} ${x-2},${base}`] }}
+                transition={{ duration: 0.4 + i * 0.08, repeat: Infinity, repeatType: "reverse" }}
+              />
+            );
+          })}
+        </motion.g>
+      )}
+      {/* Fire aura — committed today */}
       {accessories.includes("fire_aura") && (
         <motion.g
           animate={{ opacity: [0.5, 1, 0.5], scaleY: [1, 1.1, 1] }}
@@ -270,8 +301,8 @@ function AccessoryOverlay({ accessories, stage }: { accessories: string[]; stage
             <motion.path
               key={i}
               d={`M${x},175 Q${x - 4},162 ${x},150 Q${x + 4},160 ${x + 2},175`}
-              fill="#f97316"
-              opacity="0.7"
+              fill="#fbbf24"
+              opacity="0.8"
               animate={{ d: [`M${x},175 Q${x - 4},162 ${x},150 Q${x + 4},160 ${x + 2},175`, `M${x},175 Q${x + 3},160 ${x},148 Q${x - 3},158 ${x - 2},175`] }}
               transition={{ duration: 0.5 + i * 0.1, repeat: Infinity, repeatType: "reverse" }}
             />
@@ -296,7 +327,7 @@ function AccessoryOverlay({ accessories, stage }: { accessories: string[]; stage
   );
 }
 
-export function PetSprite({ stage, colors, accessories }: PetSpriteProps) {
+export function PetSprite({ stage, colors, accessories, streakDays = 0 }: PetSpriteProps) {
   return (
     <motion.div
       data-testid="pet-sprite"
@@ -322,7 +353,7 @@ export function PetSprite({ stage, colors, accessories }: PetSpriteProps) {
           {stage === "teen"   && <TeenPet colors={colors} />}
           {stage === "adult"  && <AdultPet colors={colors} />}
           {stage === "legend" && <LegendPet colors={colors} />}
-          <AccessoryOverlay accessories={accessories} stage={stage} />
+          <AccessoryOverlay accessories={accessories} stage={stage} streakDays={streakDays} />
         </svg>
       </motion.div>
     </motion.div>
