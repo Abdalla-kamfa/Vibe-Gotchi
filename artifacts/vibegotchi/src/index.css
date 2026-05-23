@@ -420,6 +420,59 @@
   }
 }
 
+/* ── Pixel dust float ── */
+@keyframes float-up {
+  0%   { transform: translateY(0);       opacity: 0;   }
+  8%   { opacity: 0.6; }
+  88%  { opacity: 0.35; }
+  100% { transform: translateY(-85vh);   opacity: 0;   }
+}
+
+/* ── Chip shimmer ── */
+@keyframes chip-shimmer {
+  0%   { transform: translateX(-120%); opacity: 0; }
+  40%  { opacity: 0.8; }
+  100% { transform: translateX(220%);  opacity: 0; }
+}
+
+/* ── Pet breath ── */
+@keyframes pet-breathe {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.022); }
+}
+.pet-breathe {
+  animation: pet-breathe 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ── Progress bar shine ── */
+@keyframes bar-shine {
+  0%   { transform: translateX(-200%); }
+  100% { transform: translateX(300%);  }
+}
+
+/* ── Leaderboard rank glows ── */
+.rank-1-row {
+  border-color: rgba(251,191,36,0.25) !important;
+  background: rgba(251,191,36,0.05) !important;
+  box-shadow: 0 0 20px rgba(251,191,36,0.1);
+}
+.rank-2-row {
+  border-color: rgba(161,161,170,0.22) !important;
+  background: rgba(161,161,170,0.04) !important;
+}
+.rank-3-row {
+  border-color: rgba(234,88,12,0.2) !important;
+  background: rgba(234,88,12,0.04) !important;
+}
+
+/* ── Roast badge pulse ── */
+@keyframes roast-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(239,68,68,0.4); }
+  50%       { box-shadow: 0 0 20px rgba(239,68,68,0.7), 0 0 40px rgba(239,68,68,0.25); }
+}
+.roast-badge { animation: roast-pulse 2s ease-in-out infinite; }
+
 /* ── Reduced motion: disable non-essential animations ── */
 @media (prefers-reduced-motion: reduce) {
   *,

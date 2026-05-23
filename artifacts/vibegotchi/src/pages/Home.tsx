@@ -19,7 +19,7 @@ import { EvolutionAnimation } from "../components/EvolutionAnimation";
 import { BattleMode } from "../components/BattleMode";
 import type { VibeResult } from "@workspace/api-client-react";
 
-type Phase = "input" | "loading" | "evolution" | "result" | "error";
+type Phase = "input" | "loading" | "evolution" | "result" | "error" | "roast";
 type AppMode = "solo" | "battle";
 
 interface ErrorState {
@@ -44,6 +44,20 @@ const FEATURES = [
   { icon: "🤖", title: "AI reads your vibe", desc: "GPT-4 analyzes your commit messages and assigns a coding personality" },
 ];
 
+const CHIP_TOOLTIPS: Record<string, string> = {
+  torvalds: "torvalds → 👑 Legend",
+  sindresorhus: "sindresorhus → 👑 Legend",
+  wesbos: "wesbos → 👑 Legend",
+  gaearon: "gaearon → 👑 Legend",
+};
+
+const DUST = Array.from({ length: 30 }, (_, i) => ({
+  id: 2000 + i,
+  x: Math.round((i * 61.8) % 100),
+  delay: (i * 0.71) % 14,
+  dur: 9 + (i * 0.83) % 12,
+}));
+
 function BackgroundEffects() {
   return (
     <>
@@ -55,6 +69,15 @@ function BackgroundEffects() {
             style={{ left: `${s.x}%`, top: `${s.y}%`, width: s.size, height: s.size }}
             animate={{ opacity: [0.05, s.size === 3 ? 0.9 : 0.65, 0.05] }}
             transition={{ duration: s.dur, repeat: Infinity, delay: s.delay, ease: "easeInOut" }}
+          />
+        ))}
+        {DUST.map((d) => (
+          <motion.div
+            key={d.id}
+            className="absolute rounded-sm"
+            style={{ left: `${d.x}%`, bottom: "-2%", width: 2, height: 2, backgroundColor: "rgba(57,255,20,0.35)" }}
+            animate={{ y: [0, -1100], opacity: [0, 0.7, 0.5, 0] }}
+            transition={{ duration: d.dur, repeat: Infinity, delay: d.delay, ease: "linear", times: [0, 0.08, 0.88, 1] }}
           />
         ))}
       </div>
@@ -113,6 +136,9 @@ export default function Home() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [timeAgo, setTimeAgo] = useState("");
   const [showCommitToast, setShowCommitToast] = useState(false);
+  const [petCount, setPetCount] = useState<number>(() => {
+    try { return parseInt(localStorage.getItem("vg_summon_count") ?? "1247", 10) || 1247; } catch { return 1247; }
+  });
 
   function handleToggleMute() {
     const nowMuted = sounds.toggle();
@@ -191,6 +217,7 @@ export default function Home() {
   }, [lastUpdated]);
 
   const doFetch = useCallback(async (u: string) => {
+    if (u.toLowerCase() === "roastme") { setPhase("roast"); return; }
     setPhase("loading");
     setError(null);
 
@@ -219,6 +246,7 @@ export default function Home() {
         timestamp: Date.now(),
       });
 
+      setPetCount((c) => { const n = c + 1; try { localStorage.setItem("vg_summon_count", String(n)); } catch {} return n; });
       setPhase("evolution");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "GENERIC";
@@ -310,6 +338,25 @@ export default function Home() {
           Your GitHub commits. Your creature.{" "}
           <span className="text-white/90 font-semibold">Don't let it die.</span>
         </p>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="relative z-10 text-xs text-white/30"
+        >
+          🐾{" "}
+          <motion.span
+            key={petCount}
+            initial={{ scale: 1.4, color: "#39ff14" }}
+            animate={{ scale: 1, color: "rgba(57,255,20,0.65)" }}
+            transition={{ duration: 0.5 }}
+            className="font-semibold"
+          >
+            {petCount.toLocaleString()}
+          </motion.span>
+          {" "}pets summoned so far
+        </motion.p>
       </motion.div>
 
       {/* Mode toggle — premium game tabs */}
@@ -397,21 +444,35 @@ export default function Home() {
               >
                 Summon My Pet ✨
               </motion.button>
+              <p className="text-xs text-white/20 text-center">
+                Press{" "}
+                <kbd className="font-pixel text-[7px] px-1.5 py-0.5 rounded bg-white/[0.06] border border-white/[0.12]">Enter</kbd>
+                {" "}to summon
+              </p>
             </form>
 
             {/* Example username chips */}
             <div className="flex flex-col items-center gap-2">
               <p className="text-xs text-white/25">Try a legend:</p>
               <div className="flex gap-2 flex-wrap justify-center">
-                {EXAMPLE_USERS.map((u) => (
+                {EXAMPLE_USERS.map((u, idx) => (
                   <motion.button
                     key={u}
                     type="button"
+                    title={CHIP_TOOLTIPS[u]}
                     onClick={() => { setUsername(u); void doFetch(u); }}
-                    whileHover={{ scale: 1.06, backgroundColor: "rgba(57,255,20,0.14)" }}
+                    whileHover={{ scale: 1.06, backgroundColor: "rgba(57,255,20,0.15)" }}
                     whileTap={{ scale: 0.94 }}
-                    className="px-3 py-1.5 min-h-[36px] rounded-full text-xs text-[--neon-green] border border-[--neon-green]/20 bg-[--neon-green]/[0.05] transition-colors font-mono"
+                    className="relative overflow-hidden px-3 py-1.5 min-h-[36px] rounded-full text-xs text-[--neon-green] border border-[--neon-green]/20 bg-[--neon-green]/[0.05] transition-colors font-mono"
                   >
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-0 pointer-events-none rounded-full"
+                      style={{
+                        background: "linear-gradient(105deg, transparent 35%, rgba(57,255,20,0.35) 50%, transparent 65%)",
+                        animation: `chip-shimmer ${2.4 + idx * 0.6}s ease-in-out ${idx * 0.5}s infinite`,
+                      }}
+                    />
                     @{u}
                   </motion.button>
                 ))}
@@ -493,6 +554,59 @@ export default function Home() {
           </motion.div>
         )}
 
+        {/* ── ROAST MODE ── */}
+        {mode === "solo" && phase === "roast" && (
+          <motion.div
+            key="roast"
+            initial={{ opacity: 0, scale: 0.93 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.93 }}
+            transition={{ type: "spring", stiffness: 280, damping: 24 }}
+            className="relative w-full max-w-sm flex flex-col items-center gap-5 text-center"
+          >
+            <motion.div
+              animate={{ rotate: [-6, 6, -6], y: [0, -10, 0] }}
+              transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+              className="text-6xl select-none"
+            >
+              💀
+            </motion.div>
+
+            <div className="roast-badge glass rounded-2xl p-6 border border-red-500/20 bg-red-500/[0.04] w-full">
+              <p className="font-pixel text-[9px] text-red-400 tracking-widest mb-4">
+                🔥 ROAST INCOMING
+              </p>
+              <p className="text-sm text-white/80 leading-relaxed">
+                No GitHub account? So you're the person who says{" "}
+                <span className="text-white/95 font-semibold italic">"I know how to code"</span>{" "}
+                at parties.
+              </p>
+              <p className="text-sm text-white/65 leading-relaxed mt-3">
+                Respect the hustle. Now go make a repo. 💀
+              </p>
+            </div>
+
+            <motion.button
+              onClick={async () => {
+                try { await navigator.clipboard.writeText("I got roasted by VibeGotchi 💀 vibegotchi.app"); } catch {}
+                sounds.sharePop();
+              }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="w-full py-3.5 min-h-[52px] rounded-2xl font-bold text-sm text-black btn-summon"
+            >
+              Share My Roast 💀
+            </motion.button>
+
+            <button
+              onClick={handleReset}
+              className="text-xs text-white/25 hover:text-white/55 transition-colors"
+            >
+              Try a real username →
+            </button>
+          </motion.div>
+        )}
+
         {/* ── RESULT ── */}
         {mode === "solo" && phase === "result" && petData && mood && vibeResult && (
           <motion.div
@@ -500,7 +614,12 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="relative w-full max-w-2xl flex flex-col gap-4 sm:gap-6"
+            className="relative w-full max-w-2xl flex flex-col gap-4 sm:gap-6 rounded-3xl p-4 sm:p-6"
+            style={{
+              background: "rgba(255,255,255,0.02)",
+              border: `1px solid ${colors.accent}28`,
+              boxShadow: `0 0 60px ${colors.accent}10`,
+            }}
           >
             {/* Username + personality */}
             <motion.div
@@ -543,12 +662,30 @@ export default function Home() {
                   {petName}
                 </motion.p>
 
-                <PetSprite
-                  stage={stage}
-                  colors={colors}
-                  accessories={accessories}
-                  streakDays={petData.currentStreak}
-                />
+                {vibeResult && (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.65, type: "spring", stiffness: 280 }}
+                    className="font-pixel px-2.5 py-0.5 rounded-full text-[8px] tracking-widest border"
+                    style={{
+                      color: stage === "legend" ? "#fbbf24" : colors.accent,
+                      borderColor: (stage === "legend" ? "#fbbf24" : colors.accent) + "44",
+                      backgroundColor: (stage === "legend" ? "#fbbf24" : colors.accent) + "12",
+                    }}
+                  >
+                    {vibeResult.petPersonality.toUpperCase()}
+                  </motion.span>
+                )}
+
+                <div className="pet-breathe">
+                  <PetSprite
+                    stage={stage}
+                    colors={colors}
+                    accessories={accessories}
+                    streakDays={petData.currentStreak}
+                  />
+                </div>
                 <MoodBadge emoji={mood.emoji} label={mood.label} tier={mood.tier} />
                 <div className="flex flex-col items-center gap-2 mt-1">
                   <ShareButton level={level} stage={stage} moodEmoji={mood.emoji} moodLabel={mood.label} />
@@ -617,19 +754,36 @@ export default function Home() {
       )}
 
       {/* Footer */}
-      <footer className="relative mt-auto pt-12 pb-2 text-center flex flex-col gap-2">
-        <p className="text-xs text-white/15 italic">No pets were harmed in the making of this app. Some developers were.</p>
-        <div className="flex gap-4 justify-center">
-          <Link href="/" className="text-xs text-white/20 hover:text-white/50 transition-colors">Home</Link>
-          <span className="text-white/10">·</span>
-          <Link href="/leaderboard" className="text-xs text-white/20 hover:text-white/50 transition-colors">Leaderboard</Link>
-          <span className="text-white/10">·</span>
-          <button
-            onClick={() => { setMode("battle"); handleReset(); }}
-            className="text-xs text-white/20 hover:text-white/50 transition-colors"
-          >
-            Battle
-          </button>
+      <footer className="relative mt-auto pt-8 pb-6 w-full max-w-2xl">
+        <div className="border-t pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0" style={{ borderColor: "rgba(57,255,20,0.1)" }}>
+          <span className="font-pixel text-[7px] text-white/25">VibeGotchi 🐾</span>
+          <p className="text-xs text-white/20 italic text-center">
+            No pets were harmed in the making of this app. Some developers were. 🐾
+          </p>
+          <div className="flex items-center gap-3">
+            <Link href="/" className="text-xs text-white/20 hover:text-white/55 transition-colors">Home</Link>
+            <span className="text-white/10">·</span>
+            <Link href="/leaderboard" className="text-xs text-white/20 hover:text-white/55 transition-colors">Leaderboard</Link>
+            <span className="text-white/10">·</span>
+            <button
+              onClick={() => { setMode("battle"); handleReset(); }}
+              className="text-xs text-white/20 hover:text-white/55 transition-colors"
+            >
+              Battle
+            </button>
+            <span className="text-white/10">·</span>
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/20 hover:text-white/55 transition-colors"
+              title="GitHub"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+              </svg>
+            </a>
+          </div>
         </div>
       </footer>
     </div>
