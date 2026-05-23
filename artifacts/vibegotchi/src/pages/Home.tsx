@@ -16,7 +16,7 @@ import { MoodBadge } from "../components/MoodBadge";
 import { ShareButton } from "../components/ShareButton";
 import { LoadingEgg } from "../components/LoadingEgg";
 import { EvolutionAnimation } from "../components/EvolutionAnimation";
-import { GitCommit, Swords, Sparkles, GitBranch, ArrowLeft, BarChart2, ChevronRight, Github, RefreshCw, X } from "lucide-react";
+import { GitCommit, Swords, Sparkles, GitBranch, ArrowLeft, BarChart2, ChevronRight, Github, RefreshCw, X, Home as HomeIcon } from "lucide-react";
 import { BattleMode } from "../components/BattleMode";
 import type { VibeResult } from "@workspace/api-client-react";
 import confetti from "canvas-confetti";
@@ -618,41 +618,68 @@ export default function Home() {
 
             <p className="text-xs text-white/20 text-center">No login required · Any public GitHub username</p>
 
-            {/* Feature highlight cards */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
-              className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full mt-2"
-            >
-              {FEATURES.map((f, i) => (
-                <motion.div
-                  key={f.title}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 + i * 0.08 }}
-                  whileHover={{ y: -3, boxShadow: "0 8px 24px rgba(57,255,20,0.07)" }}
-                  className="glass rounded-2xl p-4 flex flex-col gap-2 border border-white/[0.07] cursor-default"
-                >
-                  <motion.div
-                    className="w-11 h-11 rounded-xl flex items-center justify-center"
-                    whileHover={{ scale: 1.12, rotate: 5 }}
-                    transition={{ duration: 0.18, ease: "easeOut" }}
-                    style={([
-                      { background: "rgba(0,255,136,0.1)", border: "1px solid rgba(0,255,136,0.2)" },
-                      { background: "rgba(255,68,68,0.1)",  border: "1px solid rgba(255,68,68,0.2)"  },
-                      { background: "rgba(136,68,255,0.1)", border: "1px solid rgba(136,68,255,0.2)" },
-                    ] as React.CSSProperties[])[i]}
-                  >
-                    {i === 0 && <GitCommit size={22} color="#00ff88" strokeWidth={1.5} />}
-                    {i === 1 && <Swords    size={22} color="#ff4444" strokeWidth={1.5} />}
-                    {i === 2 && <Sparkles  size={22} color="#8844ff" strokeWidth={1.5} />}
-                  </motion.div>
-                  <span className="font-semibold text-sm text-white/90">{f.title}</span>
-                  <span className="text-xs text-white/40 leading-relaxed">{f.desc}</span>
-                </motion.div>
-              ))}
-            </motion.div>
+            {/* Section divider */}
+            <div className="section-divider">
+              <div className="divider-line" />
+              <span className="divider-text">FEATURES</span>
+              <div className="divider-line" />
+            </div>
+
+            {/* Feature Cards */}
+            <section className="features-section">
+              <div className="features-grid">
+                <div className="feature-card feature-card--green">
+                  <div className="card-accent-line" />
+                  <div className="card-icon-wrap">
+                    <GitCommit size={26} color="#00ff88" strokeWidth={1.5} />
+                  </div>
+                  <div className="card-content">
+                    <h3 className="card-title">Evolves with commits</h3>
+                    <p className="card-desc">Egg → Baby → Teen → Adult → Legend based on your 30-day activity</p>
+                  </div>
+                  <div className="card-tag">
+                    <GitCommit size={10} />
+                    5 evolution stages
+                  </div>
+                  <div className="card-corner-tl" />
+                  <div className="card-corner-br" />
+                </div>
+
+                <div className="feature-card feature-card--red">
+                  <div className="card-accent-line" />
+                  <div className="card-icon-wrap">
+                    <Swords size={26} color="#ff4444" strokeWidth={1.5} />
+                  </div>
+                  <div className="card-content">
+                    <h3 className="card-title">Battle other devs</h3>
+                    <p className="card-desc">Challenge anyone by username. Commits decide the winner.</p>
+                  </div>
+                  <div className="card-tag">
+                    <Swords size={10} />
+                    Real commit battles
+                  </div>
+                  <div className="card-corner-tl" />
+                  <div className="card-corner-br" />
+                </div>
+
+                <div className="feature-card feature-card--purple">
+                  <div className="card-accent-line" />
+                  <div className="card-icon-wrap">
+                    <Sparkles size={26} color="#8844ff" strokeWidth={1.5} />
+                  </div>
+                  <div className="card-content">
+                    <h3 className="card-title">AI reads your vibe</h3>
+                    <p className="card-desc">GPT-4 analyzes your commit messages and assigns a coding personality</p>
+                  </div>
+                  <div className="card-tag">
+                    <Sparkles size={10} />
+                    GPT-4o-mini powered
+                  </div>
+                  <div className="card-corner-tl" />
+                  <div className="card-corner-br" />
+                </div>
+              </div>
+            </section>
           </motion.div>
         )}
 
@@ -932,38 +959,56 @@ export default function Home() {
         </div>
       )}
 
+      {/* Keyboard hints */}
+      <div className="keyboard-hints mb-2">
+        <kbd>Esc</kbd> <span>back</span>
+        <span className="hint-dot">·</span>
+        <kbd>B</kbd> <span>battle</span>
+        <span className="hint-dot">·</span>
+        <kbd>L</kbd> <span>leaderboard</span>
+      </div>
+
       {/* Footer */}
-      <footer className="relative mt-auto pt-8 pb-6 w-full max-w-2xl">
-        <p className="font-pixel text-[7px] text-white/15 text-center mb-3 tracking-widest">
-          ⌨ esc · b battle · l leaderboard
-        </p>
-        <div className="border-t pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0" style={{ borderColor: "rgba(57,255,20,0.1)" }}>
-          <span className="font-pixel text-[7px] text-white/25">VibeGotchi 🐾</span>
-          <p className="text-xs text-white/20 italic text-center">
-            No pets were harmed in the making of this app. Some developers were. 🐾
+      <footer className="app-footer">
+        <div className="footer-inner">
+          <div className="footer-brand">
+            <span className="footer-logo">🐾</span>
+            <span className="footer-name">VibeGotchi</span>
+          </div>
+          <p className="footer-tagline">
+            No pets were harmed in the making of this app.
+            <br />
+            <span>Some developers were.</span>
           </p>
-          <div className="flex items-center gap-3">
-            <Link href="/" className="text-xs text-white/20 hover:text-white/55 transition-colors">Home</Link>
-            <span className="text-white/10">·</span>
-            <Link href="/leaderboard" className="text-xs text-white/20 hover:text-white/55 transition-colors">Leaderboard</Link>
-            <span className="text-white/10">·</span>
+          <div className="footer-links">
+            <Link href="/" className="footer-link">
+              <HomeIcon size={14} strokeWidth={1.5} />
+              Home
+            </Link>
+            <Link href="/leaderboard" className="footer-link">
+              <BarChart2 size={14} strokeWidth={1.5} />
+              Leaderboard
+            </Link>
             <button
               onClick={() => { setMode("battle"); handleReset(); }}
-              className="text-xs text-white/20 hover:text-white/55 transition-colors"
+              className="footer-link"
             >
+              <Swords size={14} strokeWidth={1.5} />
               Battle
             </button>
-            <span className="text-white/10">·</span>
             <a
               href="https://github.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white/20 hover:text-white/55 transition-colors"
+              className="footer-link footer-link--github"
               title="GitHub"
             >
-              <Github size={14} strokeWidth={1.5} aria-hidden="true" />
+              <Github size={14} strokeWidth={1.5} />
             </a>
           </div>
+        </div>
+        <div className="footer-bottom">
+          <span>Built in 24h · Dollar Vibe Club Sprint · May 2026</span>
         </div>
       </footer>
     </div>
