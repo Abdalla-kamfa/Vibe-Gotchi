@@ -125,6 +125,12 @@
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   body {
@@ -312,7 +318,7 @@
 }
 .hero-glow {
   position: absolute;
-  width: 480px;
+  width: min(480px, 90vw);
   height: 220px;
   left: 50%;
   top: 50%;
@@ -322,6 +328,12 @@
   animation: hero-pulse 4s ease-in-out infinite;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
+}
+
+/* Pet sprite perf hint */
+.pet-will-change {
+  will-change: transform;
 }
 
 /* Input focus glow */
@@ -405,5 +417,27 @@
   .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
+  }
+}
+
+/* ── Reduced motion: disable non-essential animations ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animate-rainbow-glow,
+  .bg-space,
+  .legend-particles,
+  .ghost-pet,
+  .hero-glow,
+  .btn-summon,
+  .tab-active,
+  .tab-active-battle {
+    animation: none !important;
   }
 }

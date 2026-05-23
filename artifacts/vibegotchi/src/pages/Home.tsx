@@ -36,7 +36,7 @@ const STARS = Array.from({ length: 80 }, (_, i) => ({
   dur: 1.8 + (i * 0.31) % 3.5,
 }));
 
-const EXAMPLE_USERS = ["torvalds", "sindresorhus", "wesbos"];
+const EXAMPLE_USERS = ["torvalds", "sindresorhus", "wesbos", "gaearon"];
 
 const FEATURES = [
   { icon: "🐾", title: "Evolves with commits", desc: "Egg → Baby → Teen → Adult → Legend based on your 30-day activity" },
@@ -271,7 +271,7 @@ export default function Home() {
     : null;
 
   return (
-    <div className="relative min-h-screen bg-space flex flex-col items-center px-4 py-4 sm:py-8">
+    <div className="relative min-h-screen bg-space flex flex-col items-center overflow-x-hidden w-full px-4 py-4 sm:py-8">
       <BackgroundEffects />
 
       {/* Mute button — top right */}
@@ -294,15 +294,16 @@ export default function Home() {
         <div className="hero-glow" aria-hidden="true" />
 
         {/* Pet preview + title row */}
-        <div className="relative z-10 flex items-center justify-center gap-4 sm:gap-5">
-          <MiniPetPreview />
+        <div className="relative z-10 flex items-center justify-center gap-3 sm:gap-5">
+          <div className="hidden xs:block sm:block" aria-hidden="true"><MiniPetPreview /></div>
           <h1
-            className="font-pixel text-3xl sm:text-4xl lg:text-5xl text-white animate-rainbow-glow leading-tight"
+            className="font-pixel text-white animate-rainbow-glow leading-tight"
+            style={{ fontSize: "clamp(1.4rem, 6vw, 2.8rem)" }}
             data-testid="text-title"
           >
             VibeGotchi
           </h1>
-          <MiniPetPreview />
+          <div className="hidden xs:block sm:block" aria-hidden="true"><MiniPetPreview /></div>
         </div>
 
         <p className="relative z-10 text-base sm:text-lg text-white/60 font-medium max-w-sm leading-snug">
@@ -382,7 +383,7 @@ export default function Home() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter any GitHub username..."
-                className="input-summon w-full px-5 py-4 rounded-2xl bg-white/[0.06] border border-white/10 text-white placeholder-white/25 text-base outline-none transition-all"
+                className="input-summon w-full px-5 py-4 min-h-[56px] rounded-2xl bg-white/[0.06] border border-white/10 text-white placeholder-white/25 text-base outline-none transition-all"
                 autoComplete="off"
                 spellCheck={false}
               />
@@ -392,7 +393,7 @@ export default function Home() {
                 disabled={!username.trim()}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
-                className="w-full py-4 rounded-2xl font-bold text-base text-black transition-all disabled:opacity-35 disabled:cursor-not-allowed btn-summon"
+                className="w-full py-4 min-h-[56px] rounded-2xl font-bold text-base text-black transition-all disabled:opacity-35 disabled:cursor-not-allowed btn-summon"
               >
                 Summon My Pet ✨
               </motion.button>
@@ -405,10 +406,11 @@ export default function Home() {
                 {EXAMPLE_USERS.map((u) => (
                   <motion.button
                     key={u}
-                    onClick={() => setUsername(u)}
-                    whileHover={{ scale: 1.06, backgroundColor: "rgba(57,255,20,0.12)" }}
-                    whileTap={{ scale: 0.96 }}
-                    className="px-3 py-1.5 rounded-full text-xs text-[--neon-green] border border-[--neon-green]/20 bg-[--neon-green]/[0.05] transition-colors font-mono"
+                    type="button"
+                    onClick={() => { setUsername(u); void doFetch(u); }}
+                    whileHover={{ scale: 1.06, backgroundColor: "rgba(57,255,20,0.14)" }}
+                    whileTap={{ scale: 0.94 }}
+                    className="px-3 py-1.5 min-h-[36px] rounded-full text-xs text-[--neon-green] border border-[--neon-green]/20 bg-[--neon-green]/[0.05] transition-colors font-mono"
                   >
                     @{u}
                   </motion.button>
@@ -484,7 +486,7 @@ export default function Home() {
               onClick={handleReset}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="px-6 py-2.5 rounded-xl text-sm font-medium border border-white/10 text-white/70 hover:bg-white/5 transition-colors"
+              className="px-8 py-3 min-h-[48px] rounded-xl text-sm font-medium border border-white/10 text-white/70 hover:bg-white/5 transition-colors"
             >
               Try again
             </motion.button>
@@ -498,7 +500,7 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="relative w-full max-w-2xl flex flex-col gap-3 sm:gap-5"
+            className="relative w-full max-w-2xl flex flex-col gap-4 sm:gap-6"
           >
             {/* Username + personality */}
             <motion.div
@@ -527,9 +529,9 @@ export default function Home() {
             )}
 
             {/* Pet + Stats */}
-            <div className="flex flex-col lg:flex-row gap-3 sm:gap-5 items-center lg:items-start">
+            <div className="flex flex-col md:flex-row gap-4 sm:gap-5 items-center md:items-start">
               {/* Pet column */}
-              <div className="flex flex-col items-center gap-1 sm:gap-2 w-full lg:flex-1 lg:min-w-[260px]">
+              <div className="flex flex-col items-center gap-1 sm:gap-2 w-full md:flex-1 md:min-w-[220px]">
                 {/* Pet name */}
                 <motion.p
                   initial={{ opacity: 0 }}
@@ -574,7 +576,7 @@ export default function Home() {
               </div>
 
               {/* Stats column */}
-              <div className="w-full lg:flex-1">
+              <div className="w-full md:flex-1">
                 <StatsPanel
                   healthPercent={healthPercent}
                   energyPercent={energyPercent}

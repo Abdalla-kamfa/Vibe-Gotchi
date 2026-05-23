@@ -1,0 +1,229 @@
+Paste this to Replit Agent right now:
+
+Fix every single responsiveness bug and make VibeGotchi pixel-perfect on every screen size. This is a competition submission and must look 100% professional on all devices.
+CRITICAL BUGS TO FIX FIRST
+1. Test on these exact screen widths and fix every bug:
+
+320px (small Android phones)
+375px (iPhone SE)
+390px (iPhone 14)
+414px (iPhone Plus)
+768px (iPad)
+1024px (iPad landscape / small laptop)
+1280px (laptop)
+1440px (desktop)
+1920px (large desktop)
+
+2. Common bugs to hunt and fix:
+
+Text overflowing outside containers
+Buttons too small to tap on mobile (minimum 48px height always)
+Pet sprite too small on mobile
+Stats panel overflowing horizontally
+Battle mode side by side breaking on small screens
+Input field not full width on mobile
+Font sizes too large or too small on any screen
+Any horizontal scroll at any width (this must be ZERO)
+Leaderboard rows wrapping badly
+Footer text overflowing
+
+
+LANDING PAGE — COMPLETE REDESIGN
+Hero Section:
+
+Full viewport height on desktop, auto height on mobile
+Centered content both horizontally and vertically
+Title "VibeGotchi" — clamp font size: clamp(2rem, 8vw, 5rem) so it scales perfectly
+Animated rainbow glow cycles: green → purple → cyan → back to green, 4 second loop
+Tagline font size: clamp(0.75rem, 2.5vw, 1.1rem)
+Add a small animated baby pet sprite floating above or beside the title — gives immediate visual context
+Generous padding: 24px mobile, 48px tablet, 80px desktop
+
+Input Area:
+
+Max width 560px, centered, full width on mobile with 16px side padding
+Input height: 56px mobile, 64px desktop
+Large rounded corners: border-radius 16px
+Neon green glowing border on focus with box-shadow spread
+Placeholder text: "Enter any GitHub username..."
+Font size: 16px minimum (prevents iOS zoom on focus)
+
+Quick Fill Chips:
+
+Row of clickable username chips below input
+Labels: torvalds sindresorhus wesbos gaearon
+Dark background chips, green border, green text
+On click: fills input AND auto-submits immediately
+Wrap to next line on very small screens
+Label above: "Try these legends:"
+
+Summon Button:
+
+Height: 56px mobile, 64px desktop
+Full width of input container
+Animated gradient: cycles through emerald shades
+Large bold text: font-size clamp(1rem, 3vw, 1.25rem)
+Scale 1.02 on hover, 0.98 on press
+Disabled state when input is empty: 50% opacity, no animation
+
+Feature Preview Cards:
+
+3 cards in a row on desktop, stacked on mobile
+Each card: dark glass background, subtle green border, 16px padding
+Icon (large emoji) + bold title + one line description
+Cards:
+
+🐾 "Living Pet" — "Evolves through 5 stages based on real GitHub data"
+⚔️ "Battle Mode" — "Challenge any developer. May the most active pet win"
+🤖 "AI Personality" — "GPT reads your commits and judges your coding soul"
+
+
+Hover: subtle lift with box-shadow, border brightens
+Mobile: full width stack with 12px gap
+
+Solo/Battle Tab Toggle:
+
+Pill-style toggle, not separate buttons
+Container: dark background, border-radius 50px, padding 4px
+Active tab: bright green background, black text, subtle glow
+Inactive tab: transparent, muted text
+Smooth transition 200ms on switch
+Width: fit-content, centered
+On mobile: tabs take equal width, full container width
+
+
+PET DISPLAY SCREEN — FULL RESPONSIVE FIX
+Mobile layout (under 768px):
+
+Single column, everything centered
+Pet sprite: 200px × 200px minimum
+Pet name in pixel font above pet
+Mood badge directly below pet
+Stats panel full width below
+Share button full width
+Auto-refresh indicator bottom of screen, small text
+
+Tablet layout (768px — 1024px):
+
+Two column: pet left (45%), stats right (55%)
+Pet sprite: 220px × 220px
+Comfortable 24px gap between columns
+
+Desktop layout (1024px+):
+
+Two column with more breathing room
+Pet sprite: 260px × 260px
+Max content width: 900px centered
+Stats panel has more padding, larger text
+
+Stats Panel fixes:
+
+Grid: 2 columns on all sizes
+Each stat cell: minimum height 70px
+Stat label: small pixel font
+Stat value: larger regular font
+Progress bars: always full width of container, never overflow
+Health bar: animated fill, red color
+Energy bar: animated fill, yellow color
+All 4 corner stats (Fed, Streak, Level, Stars) equal size cells
+
+
+BATTLE MODE — FULL RESPONSIVE FIX
+Mobile (under 768px):
+
+Stack vertically: Fighter 1 on top, VS divider in middle, Fighter 2 below
+Each fighter input: full width
+Both pets stack vertically after battle
+VS badge: centered between them, large glowing text
+Winner banner: full width, centered text
+
+Tablet/Desktop:
+
+Side by side layout
+Fighter 1 left, VS center, Fighter 2 right
+Equal width for both sides
+VS badge: vertically centered between pets
+
+Battle inputs:
+
+Same height and style as solo input
+Labels: "Fighter 1 🥊" and "Fighter 2 🥊"
+START BATTLE button: full width, red/orange gradient to differentiate from solo
+
+
+LEADERBOARD PAGE — FULL RESPONSIVE FIX
+Mobile:
+
+Each row: avatar left (40px circle), username + mood middle, level badge right
+No horizontal overflow ever
+Rank number: bold, colored (#1 gold, #2 silver, #3 bronze)
+Pet name below username in smaller muted text
+
+Desktop:
+
+Wider rows with more columns visible
+Show: rank, avatar, username, pet name, stage badge, level, mood, vibe line
+Vibe line truncated with ellipsis if too long
+
+General:
+
+Stagger entrance animation: rows fade in one by one, 50ms delay each
+Empty state: centered message with large emoji
+"Back to VibeGotchi" button: top left, subtle ghost style
+
+
+LOADING STATE — IMPROVE
+
+Egg animation: larger on all screens, minimum 120px
+Loading messages: larger text, centered, good contrast
+Skeleton loaders below egg: match the actual stats panel layout
+Never show blank white areas
+
+
+ERROR STATES — IMPROVE
+
+Username not found: centered, large sad emoji, helpful message, "Try again" button
+Rate limited: centered, clock emoji, countdown or retry message
+Network error: centered, wifi emoji, retry button
+All error states: same dark themed style as rest of app
+
+
+TYPOGRAPHY SYSTEM — ENFORCE EVERYWHERE
+css/* Pixel font — headings and labels only */
+font-family: 'Press Start 2P' — max 4 uses per screen
+
+/* Body font — everything else */  
+font-family: 'Inter' — all descriptions, values, messages
+
+/* Scale */
+Title: clamp(2rem, 8vw, 5rem)
+Subtitle: clamp(0.75rem, 2vw, 1rem)  
+Button text: clamp(0.875rem, 2.5vw, 1.125rem)
+Stat label: 8px-10px (pixel font)
+Stat value: 16px-20px (Inter)
+Body text: 14px-16px (Inter)
+Small/muted: 12px (Inter)
+
+ANIMATION PERFORMANCE
+
+All animations use transform and opacity only — never animate width/height/top/left
+Add will-change: transform to pet sprite and animated elements
+Reduce motion: add @media (prefers-reduced-motion: reduce) to disable non-essential animations
+No animation should cause layout shift
+
+
+FINAL QUALITY CHECK
+After all fixes, verify:
+
+ Zero horizontal scroll at any viewport width
+ All buttons minimum 48px tall
+ No text overflow anywhere
+ Pet sprite visible and animated on all sizes
+ Battle mode works on 375px mobile
+ Leaderboard readable on 320px
+ Input font-size 16px minimum (prevents iOS zoom)
+ All interactive elements have hover AND focus states
+ Dark theme consistent — no white backgrounds anywhere
+ Footer visible and not overlapping content
+
+Fix everything, push to GitHub, confirm Vercel deploys successfully.

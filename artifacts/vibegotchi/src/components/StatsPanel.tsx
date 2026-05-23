@@ -78,10 +78,10 @@ export function StatsPanel({
         ].map(({ emoji, label, value }) => (
           <div
             key={label}
-            className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-2.5 sm:p-3 flex flex-col gap-1"
+            className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-2.5 sm:p-3 flex flex-col gap-1 min-h-[70px] justify-center"
           >
             <span className="font-pixel text-[7px] sm:text-[8px] text-white/50 tracking-wide">{emoji} {label}</span>
-            <span className="text-sm font-semibold text-white/90">{value}</span>
+            <span className="text-sm sm:text-base font-semibold text-white/90">{value}</span>
           </div>
         ))}
       </div>

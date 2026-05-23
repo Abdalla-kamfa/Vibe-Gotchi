@@ -184,7 +184,7 @@ export function BattleMode() {
                 value={username1}
                 onChange={(e) => setUsername1(e.target.value)}
                 placeholder="username"
-                className="w-full px-3 py-3 rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder-white/20 text-sm outline-none focus:border-[--neon-green] transition-all"
+                className="w-full px-3 py-3 min-h-[48px] rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder-white/20 text-base outline-none focus:border-[--neon-green] transition-all"
                 autoComplete="off" spellCheck={false}
               />
             </div>
@@ -194,7 +194,7 @@ export function BattleMode() {
                 value={username2}
                 onChange={(e) => setUsername2(e.target.value)}
                 placeholder="username"
-                className="w-full px-3 py-3 rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder-white/20 text-sm outline-none focus:border-red-500/60 transition-all"
+                className="w-full px-3 py-3 min-h-[48px] rounded-xl bg-white/[0.06] border border-white/10 text-white placeholder-white/20 text-base outline-none focus:border-red-500/60 transition-all"
                 autoComplete="off" spellCheck={false}
               />
             </div>
