@@ -176,8 +176,25 @@ export function BattleMode() {
     if (s1 !== s2) sounds.victory(); else sounds.pop();
   }, [showResult, pet1, pet2]);
 
+  useEffect(() => {
+    if (phase === "result") {
+      document.title = "⚔️ Battle Result — VibeGotchi 🐾";
+    }
+    return () => { document.title = "VibeGotchi 🐾"; };
+  }, [phase]);
+
   function handleReset() {
     setPhase("input"); setPet1(null); setPet2(null); setErrorMsg(""); setShowResult(false);
+    setUsername1(""); setUsername2("");
+  }
+
+  function handleRematch() {
+    setPet1(null);
+    setPet2(null);
+    setShowResult(false);
+    setErrorMsg("");
+    setPhase("input");
+    // username1, username2 remain — user just clicks Battle again
   }
 
   async function handleShare() {
@@ -409,9 +426,16 @@ export function BattleMode() {
             {copied ? "Copied! 🎉" : "Share Battle 🔥"}
           </motion.button>
           <motion.button
+            onClick={handleRematch}
+            whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
+            className="px-5 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold border border-yellow-400/30 text-yellow-300/80 hover:bg-yellow-500/10 transition-colors"
+          >
+            Rematch ⚡
+          </motion.button>
+          <motion.button
             onClick={handleReset}
             whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
-            className="px-5 py-2.5 min-h-[44px] rounded-xl text-sm text-white/60 border border-white/10 hover:bg-white/5 transition-colors"
+            className="px-5 py-2.5 min-h-[44px] rounded-xl text-sm text-white/40 border border-white/10 hover:bg-white/5 transition-colors"
           >
             New Battle
           </motion.button>

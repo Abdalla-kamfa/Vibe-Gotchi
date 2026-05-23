@@ -247,15 +247,20 @@
 
 /* Rainbow title glow */
 @keyframes rainbow-glow {
-  0%   { text-shadow: 0 0 18px rgba(57,255,20,0.8),  0 0 36px rgba(57,255,20,0.4); }
-  20%  { text-shadow: 0 0 18px rgba(147,51,234,0.8), 0 0 36px rgba(147,51,234,0.4); }
-  40%  { text-shadow: 0 0 18px rgba(59,130,246,0.8), 0 0 36px rgba(59,130,246,0.4); }
-  60%  { text-shadow: 0 0 18px rgba(251,191,36,0.8), 0 0 36px rgba(251,191,36,0.4); }
-  80%  { text-shadow: 0 0 18px rgba(239,68,68,0.8),  0 0 36px rgba(239,68,68,0.4); }
-  100% { text-shadow: 0 0 18px rgba(57,255,20,0.8),  0 0 36px rgba(57,255,20,0.4); }
+  0%   { text-shadow: 0 0 20px rgba(57,255,20,0.9),   0 0 44px rgba(57,255,20,0.5),   0 0 88px rgba(57,255,20,0.18); }
+  16%  { text-shadow: 0 0 28px rgba(147,51,234,1),    0 0 56px rgba(147,51,234,0.6),  0 0 110px rgba(147,51,234,0.22); }
+  33%  { text-shadow: 0 0 20px rgba(59,130,246,0.9),  0 0 44px rgba(59,130,246,0.5),  0 0 88px rgba(59,130,246,0.18); }
+  50%  { text-shadow: 0 0 28px rgba(251,191,36,1),    0 0 56px rgba(251,191,36,0.6),  0 0 110px rgba(251,191,36,0.22); }
+  66%  { text-shadow: 0 0 20px rgba(239,68,68,0.9),   0 0 44px rgba(239,68,68,0.5),   0 0 88px rgba(239,68,68,0.18); }
+  83%  { text-shadow: 0 0 28px rgba(20,230,185,1),    0 0 56px rgba(20,230,185,0.6),  0 0 110px rgba(20,230,185,0.22); }
+  100% { text-shadow: 0 0 20px rgba(57,255,20,0.9),   0 0 44px rgba(57,255,20,0.5),   0 0 88px rgba(57,255,20,0.18); }
+}
+@keyframes rainbow-ls {
+  0%, 100% { letter-spacing: 0.02em; }
+  50%       { letter-spacing: 0.08em; }
 }
 .animate-rainbow-glow {
-  animation: rainbow-glow 7s linear infinite;
+  animation: rainbow-glow 9s ease-in-out infinite, rainbow-ls 4.5s ease-in-out infinite;
 }
 
 /* Animated summon button */

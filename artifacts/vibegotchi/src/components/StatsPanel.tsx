@@ -53,6 +53,7 @@ interface StatsPanelProps {
   petPersonality: string;
   totalStars: number;
   totalRepos: number;
+  accentColor: string;
 }
 
 export function StatsPanel({
@@ -64,6 +65,7 @@ export function StatsPanel({
   vibeOneLiner,
   petPersonality,
   totalStars,
+  accentColor,
 }: StatsPanelProps) {
   const levelColor = level >= 80 ? "#fbbf24" : level >= 50 ? "#c084fc" : "var(--neon-green)";
   const levelGlow  = level >= 80
@@ -85,8 +87,20 @@ export function StatsPanel({
     <motion.div
       data-testid="stats-panel"
       initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
+      animate={{
+        opacity: 1,
+        x: 0,
+        boxShadow: [
+          `inset 0 0 0 1px ${accentColor}18`,
+          `inset 0 0 0 1px ${accentColor}55, 0 0 18px ${accentColor}18`,
+          `inset 0 0 0 1px ${accentColor}18`,
+        ],
+      }}
+      transition={{
+        opacity: { duration: 0.5, delay: 0.2 },
+        x:       { duration: 0.5, delay: 0.2 },
+        boxShadow: { duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1.2 },
+      }}
       className="rounded-2xl glass p-4 sm:p-5 flex flex-col gap-3 sm:gap-4"
     >
       {/* Header */}

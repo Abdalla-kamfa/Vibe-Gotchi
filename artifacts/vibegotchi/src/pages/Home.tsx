@@ -18,6 +18,7 @@ import { LoadingEgg } from "../components/LoadingEgg";
 import { EvolutionAnimation } from "../components/EvolutionAnimation";
 import { BattleMode } from "../components/BattleMode";
 import type { VibeResult } from "@workspace/api-client-react";
+import confetti from "canvas-confetti";
 
 type Phase = "input" | "loading" | "evolution" | "result" | "error" | "roast";
 type AppMode = "solo" | "battle";
@@ -171,6 +172,42 @@ export default function Home() {
     }
   }, [phase, petData, stage]);
 
+  // Dynamic browser tab title
+  useEffect(() => {
+    if (phase === "result" && petData) {
+      document.title = `${petData.username}'s Pet — VibeGotchi 🐾`;
+    } else {
+      document.title = "VibeGotchi 🐾";
+    }
+    return () => { document.title = "VibeGotchi 🐾"; };
+  }, [phase, petData]);
+
+  // Confetti burst for legend pets
+  useEffect(() => {
+    if (phase !== "result" || stage !== "legend") return;
+    void confetti({
+      particleCount: 130,
+      spread: 80,
+      origin: { y: 0.45 },
+      colors: [colors.fill, colors.accent, "#fbbf24", "#39ff14", "#c084fc"],
+      disableForReducedMotion: true,
+    });
+    const t = setTimeout(() => confetti.reset(), 2200);
+    return () => clearTimeout(t);
+  }, [phase, stage]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Global keyboard shortcuts
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === "Escape" && phase !== "input") handleReset();
+      if ((e.key === "b" || e.key === "B") && phase === "input") { setMode("battle"); sounds.click(); }
+      if (e.key === "l" || e.key === "L") window.location.href = "/leaderboard";
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [phase]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Silent background refresh every 30 seconds while on result screen
   const silentRefresh = useCallback(async (user: string) => {
     setIsRefreshing(true);
@@ -310,11 +347,12 @@ export default function Home() {
     <div className="relative min-h-screen bg-space flex flex-col items-center overflow-x-hidden w-full px-4 py-4 sm:py-8">
       <BackgroundEffects />
 
-      {/* Mute button — top right */}
+      {/* Sound toggle — top right, always visible */}
       <button
         onClick={handleToggleMute}
-        className="fixed top-4 right-4 z-50 w-9 h-9 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center text-base hover:bg-white/10 transition-colors"
-        title={muted ? "Unmute" : "Mute"}
+        className="fixed top-4 right-4 z-50 w-11 h-11 rounded-xl bg-black/60 border border-white/25 flex items-center justify-center text-lg hover:bg-white/10 hover:border-white/50 transition-all backdrop-blur-sm shadow-lg"
+        title={muted ? "Enable sounds" : "Disable sounds"}
+        aria-label={muted ? "Enable sounds" : "Disable sounds"}
       >
         {muted ? "🔇" : "🔊"}
       </button>
@@ -630,15 +668,25 @@ export default function Home() {
               boxShadow: `0 0 60px ${colors.accent}10`,
             }}
           >
-            {/* Username + personality */}
+            {/* Username + avatar + personality */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="text-center"
             >
-              <h2 className="text-lg font-semibold text-white">{petData.username}</h2>
+              <div className="flex items-center justify-center gap-2 mb-1">
+                <img
+                  src={`https://github.com/${petData.username}.png?size=48`}
+                  alt=""
+                  aria-hidden="true"
+                  className="w-7 h-7 rounded-full"
+                  style={{ border: `2px solid ${colors.accent}55` }}
+                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                />
+                <h2 className="text-lg font-semibold text-white">{petData.username}</h2>
+              </div>
               <p
-                className="font-pixel text-[9px] mt-1 tracking-widest uppercase"
+                className="font-pixel text-[9px] mt-0.5 tracking-widest uppercase"
                 style={{ color: "#c084fc", textShadow: "0 0 10px rgba(192,132,252,0.6), 0 0 24px rgba(147,51,234,0.35)" }}
               >
                 {vibeResult.petPersonality}
@@ -733,6 +781,7 @@ export default function Home() {
                   petPersonality={vibeResult.petPersonality}
                   totalStars={petData.totalStars}
                   totalRepos={petData.totalRepos}
+                  accentColor={colors.accent}
                 />
               </div>
             </div>
@@ -764,6 +813,9 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="relative mt-auto pt-8 pb-6 w-full max-w-2xl">
+        <p className="font-pixel text-[7px] text-white/15 text-center mb-3 tracking-widest">
+          ⌨ esc · b battle · l leaderboard
+        </p>
         <div className="border-t pt-5 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0" style={{ borderColor: "rgba(57,255,20,0.1)" }}>
           <span className="font-pixel text-[7px] text-white/25">VibeGotchi 🐾</span>
           <p className="text-xs text-white/20 italic text-center">

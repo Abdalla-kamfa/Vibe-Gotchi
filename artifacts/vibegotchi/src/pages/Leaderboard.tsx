@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "wouter";
 import { loadLeaderboard, clearLeaderboard } from "../lib/leaderboard";
@@ -11,6 +11,11 @@ export default function Leaderboard() {
       .sort((a, b) => b.level - a.level)
       .slice(0, 20)
   );
+
+  useEffect(() => {
+    document.title = "Hall of Legends — VibeGotchi 🐾";
+    return () => { document.title = "VibeGotchi 🐾"; };
+  }, []);
 
   function handleClear() {
     clearLeaderboard();
