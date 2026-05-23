@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Crown, Shield, Star } from "lucide-react";
 import type { LeaderboardEntry } from "../lib/leaderboard";
 
 const stageMeta: Record<string, { cls: string; label: string }> = {
@@ -7,12 +8,6 @@ const stageMeta: Record<string, { cls: string; label: string }> = {
   teen:   { cls: "bg-blue-500/20 text-blue-400 border-blue-500/30",        label: "Teen"   },
   adult:  { cls: "bg-purple-500/20 text-purple-400 border-purple-500/30",  label: "Adult"  },
   legend: { cls: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30 legend-badge-glow", label: "Legend" },
-};
-
-const rankColors: Record<number, string> = {
-  1: "text-yellow-400",
-  2: "text-zinc-300",
-  3: "text-orange-400",
 };
 
 const rankRowCls: Record<number, string> = {
@@ -28,9 +23,15 @@ interface LeaderboardRowProps {
   onClick?: () => void;
 }
 
+function RankBadge({ rank }: { rank: number }) {
+  if (rank === 1) return <Crown  size={18} color="#fbbf24" fill="#fbbf24" />;
+  if (rank === 2) return <Shield size={18} color="#d1d5db" fill="#d1d5db" />;
+  if (rank === 3) return <Star   size={18} color="#cd7f32" fill="#cd7f32" />;
+  return <span className="font-pixel text-[9px] text-white/40">#{rank}</span>;
+}
+
 export function LeaderboardRow({ entry, rank, index, onClick }: LeaderboardRowProps) {
   const meta    = stageMeta[entry.stage] ?? stageMeta.egg;
-  const rankCls = rankColors[rank] ?? "text-white/40";
   const rowCls  = rankRowCls[rank] ?? "";
   const avatarSize = rank === 1 ? "w-11 h-11" : "w-9 h-9";
   const isTop3  = rank <= 3;
@@ -45,9 +46,9 @@ export function LeaderboardRow({ entry, rank, index, onClick }: LeaderboardRowPr
       onClick={onClick}
       className={`flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.03] px-3 py-3 transition-colors ${rowCls} ${onClick ? "cursor-pointer hover:bg-white/[0.06]" : ""}`}
     >
-      <span className={`font-pixel text-xs w-7 shrink-0 ${rankCls}`}>
-        {rank === 1 ? "👑" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `#${rank}`}
-      </span>
+      <div className="w-7 shrink-0 flex justify-center">
+        <RankBadge rank={rank} />
+      </div>
 
       <img
         src={`https://github.com/${entry.username}.png`}

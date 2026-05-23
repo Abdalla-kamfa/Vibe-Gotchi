@@ -16,6 +16,7 @@ import { MoodBadge } from "../components/MoodBadge";
 import { ShareButton } from "../components/ShareButton";
 import { LoadingEgg } from "../components/LoadingEgg";
 import { EvolutionAnimation } from "../components/EvolutionAnimation";
+import { GitCommit, Swords, Sparkles, GitBranch, ArrowLeft, BarChart2, ChevronRight, Github, RefreshCw, X } from "lucide-react";
 import { BattleMode } from "../components/BattleMode";
 import type { VibeResult } from "@workspace/api-client-react";
 import confetti from "canvas-confetti";
@@ -40,9 +41,9 @@ const STARS = Array.from({ length: 80 }, (_, i) => ({
 const EXAMPLE_USERS = ["torvalds", "sindresorhus", "wesbos", "gaearon"];
 
 const FEATURES = [
-  { icon: "🐾", title: "Evolves with commits", desc: "Egg → Baby → Teen → Adult → Legend based on your 30-day activity" },
-  { icon: "⚔️", title: "Battle other devs", desc: "Challenge anyone by username. Commits decide the winner." },
-  { icon: "🤖", title: "AI reads your vibe", desc: "GPT-4 analyzes your commit messages and assigns a coding personality" },
+  { title: "Evolves with commits", desc: "Egg → Baby → Teen → Adult → Legend based on your 30-day activity" },
+  { title: "Battle other devs",    desc: "Challenge anyone by username. Commits decide the winner." },
+  { title: "AI reads your vibe",   desc: "GPT-4 analyzes your commit messages and assigns a coding personality" },
 ];
 
 const CHIP_TOOLTIPS: Record<string, string> = {
@@ -505,8 +506,10 @@ export default function Home() {
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
-              <span className="relative z-10">
-                {m === "solo" ? "🎮 Solo" : "⚔️ Battle"}
+              <span className="relative z-10 flex items-center gap-1.5">
+                {m === "solo"
+                  ? <><GitBranch size={13} strokeWidth={2} /> Solo</>
+                  : <><Swords size={13} strokeWidth={2} /> Battle</>}
               </span>
             </motion.button>
           );
@@ -560,10 +563,10 @@ export default function Home() {
                       exit={{ opacity: 0, scale: 0.7 }}
                       transition={{ duration: 0.12 }}
                       onClick={() => { setUsername(""); inputRef.current?.focus(); }}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center text-white/30 hover:text-white/80 hover:bg-white/10 transition-all text-sm"
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center text-white/30 hover:text-white/80 hover:bg-white/10 transition-all"
                       aria-label="Clear input"
                     >
-                      ✕
+                      <X size={12} strokeWidth={2.5} />
                     </motion.button>
                   )}
                 </AnimatePresence>
@@ -631,7 +634,20 @@ export default function Home() {
                   whileHover={{ y: -3, boxShadow: "0 8px 24px rgba(57,255,20,0.07)" }}
                   className="glass rounded-2xl p-4 flex flex-col gap-2 border border-white/[0.07] cursor-default"
                 >
-                  <span className="text-2xl">{f.icon}</span>
+                  <motion.div
+                    className="w-11 h-11 rounded-xl flex items-center justify-center"
+                    whileHover={{ scale: 1.12, rotate: 5 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                    style={([
+                      { background: "rgba(0,255,136,0.1)", border: "1px solid rgba(0,255,136,0.2)" },
+                      { background: "rgba(255,68,68,0.1)",  border: "1px solid rgba(255,68,68,0.2)"  },
+                      { background: "rgba(136,68,255,0.1)", border: "1px solid rgba(136,68,255,0.2)" },
+                    ] as React.CSSProperties[])[i]}
+                  >
+                    {i === 0 && <GitCommit size={22} color="#00ff88" strokeWidth={1.5} />}
+                    {i === 1 && <Swords    size={22} color="#ff4444" strokeWidth={1.5} />}
+                    {i === 2 && <Sparkles  size={22} color="#8844ff" strokeWidth={1.5} />}
+                  </motion.div>
                   <span className="font-semibold text-sm text-white/90">{f.title}</span>
                   <span className="text-xs text-white/40 leading-relaxed">{f.desc}</span>
                 </motion.div>
@@ -848,10 +864,12 @@ export default function Home() {
                   <ShareButton level={level} stage={stage} moodEmoji={mood.emoji} moodLabel={mood.label} />
                   <Link
                     href="/leaderboard"
-                    className="text-xs text-white/40 hover:text-white/70 transition-colors"
+                    className="inline-flex items-center gap-1 text-xs text-white/40 hover:text-white/70 transition-colors"
                     data-testid="link-leaderboard"
                   >
-                    View Leaderboard →
+                    <BarChart2 size={12} strokeWidth={2} />
+                    View Leaderboard
+                    <ChevronRight size={11} strokeWidth={2} />
                   </Link>
                   {timeAgo && (
                     <div className="flex items-center gap-1.5 mt-1">
@@ -897,8 +915,9 @@ export default function Home() {
               <button
                 data-testid="button-search-another"
                 onClick={handleReset}
-                className="text-xs text-white/30 hover:text-white/60 transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors"
               >
+                <ArrowLeft size={12} strokeWidth={2} />
                 Search another username
               </button>
             </motion.div>
@@ -942,9 +961,7 @@ export default function Home() {
               className="text-white/20 hover:text-white/55 transition-colors"
               title="GitHub"
             >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
-              </svg>
+              <Github size={14} strokeWidth={1.5} aria-hidden="true" />
             </a>
           </div>
         </div>

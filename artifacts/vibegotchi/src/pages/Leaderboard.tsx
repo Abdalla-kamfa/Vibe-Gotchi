@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "wouter";
+import { ArrowLeft, Crown, Users, Sparkles } from "lucide-react";
 import { loadLeaderboard, clearLeaderboard } from "../lib/leaderboard";
 import { LeaderboardRow } from "../components/LeaderboardRow";
 
@@ -40,7 +41,7 @@ export default function Leaderboard() {
           className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors"
           data-testid="link-home"
         >
-          ← Back to VibeGotchi
+          <ArrowLeft size={13} strokeWidth={2} /> Back to VibeGotchi
         </Link>
       </motion.div>
 
@@ -51,6 +52,7 @@ export default function Leaderboard() {
         className="text-center mb-8 w-full max-w-lg"
       >
         <div className="flex items-center justify-center gap-3 relative">
+          <Crown size={22} color="#fbbf24" fill="#fbbf24" />
           <h1
             className="font-pixel text-xl"
             style={{ color: "#fbbf24", textShadow: "0 0 20px rgba(251,191,36,0.6), 0 0 40px rgba(251,191,36,0.3)" }}
@@ -91,9 +93,8 @@ export default function Leaderboard() {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              className="text-6xl"
             >
-              😔
+              <Users size={52} color="#333333" strokeWidth={1} />
             </motion.div>
             <p className="text-sm text-white/50 text-center max-w-[260px] leading-relaxed">
               No pets summoned yet.{" "}

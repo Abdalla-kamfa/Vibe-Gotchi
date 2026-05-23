@@ -8,6 +8,7 @@ import {
 import { analyzeVibe } from "../lib/openai";
 import { generatePetName } from "../lib/petName";
 import { sounds } from "../lib/sounds";
+import { Swords, Flame, Crown, RefreshCw, Share2, Check } from "lucide-react";
 import { PetSprite } from "./PetSprite";
 import { MoodBadge } from "./MoodBadge";
 import type { VibeResult } from "@workspace/api-client-react";
@@ -234,7 +235,7 @@ export function BattleMode() {
         <form onSubmit={handleBattle} className="flex flex-col gap-3">
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5">
-              <label className="font-pixel text-[8px] text-white/40 tracking-wide">🥊 FIGHTER 1</label>
+              <label className="font-pixel text-[8px] text-white/40 tracking-wide flex items-center gap-1"><Swords size={10} color="rgba(255,255,255,0.4)" strokeWidth={2} /> FIGHTER 1</label>
               <input
                 value={username1}
                 onChange={(e) => setUsername1(e.target.value)}
@@ -244,7 +245,7 @@ export function BattleMode() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="font-pixel text-[8px] text-white/40 tracking-wide">🥊 FIGHTER 2</label>
+              <label className="font-pixel text-[8px] text-white/40 tracking-wide flex items-center gap-1"><Swords size={10} color="rgba(255,255,255,0.4)" strokeWidth={2} /> FIGHTER 2</label>
               <input
                 value={username2}
                 onChange={(e) => setUsername2(e.target.value)}
@@ -289,7 +290,11 @@ export function BattleMode() {
             className="w-full py-4 min-h-[56px] rounded-xl font-bold text-base text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             style={{ background: "linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #dc2626 100%)" }}
           >
-            START BATTLE ⚔️
+            <span className="flex items-center justify-center gap-2">
+              <Flame size={16} strokeWidth={1.5} />
+              START BATTLE
+              <Flame size={16} strokeWidth={1.5} />
+            </span>
           </motion.button>
         </form>
         <p className="text-xs text-white/20 text-center">Commits decide the winner. No mercy.</p>
@@ -412,9 +417,10 @@ export function BattleMode() {
                 </>
               ) : (
                 <>
-                  <p className="font-pixel text-[9px] tracking-wide" style={{ color: "#fbbf24", textShadow: "0 0 12px rgba(251,191,36,0.5)" }}>
-                    🏆 {winner!.username} WINS!
-                  </p>
+                  <div className="font-pixel text-[9px] tracking-wide flex items-center justify-center gap-1.5" style={{ color: "#fbbf24", textShadow: "0 0 12px rgba(251,191,36,0.5)" }}>
+                    <Crown size={13} color="#fbbf24" fill="#fbbf24" />
+                    {winner!.username} WINS!
+                  </div>
                   <p className="text-xs text-white/70 mt-1 italic">{battleCry}</p>
                   <p className="text-xs text-white/30 mt-0.5">
                     {winner!.data.commitCount30Days} commits vs {loser!.data.commitCount30Days} commits (last 30 days)
@@ -453,14 +459,16 @@ export function BattleMode() {
             whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
             className="px-5 py-2.5 min-h-[44px] rounded-xl font-semibold text-sm text-black btn-summon"
           >
-            {copied ? "Copied! 🎉" : "Share Battle 🔥"}
+            {copied
+              ? <><Check size={14} strokeWidth={2.5} /> Copied!</>
+              : <><Share2 size={14} strokeWidth={2} /> Share Battle</>}
           </motion.button>
           <motion.button
             onClick={handleRematch}
             whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
             className="px-5 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold border border-yellow-400/30 text-yellow-300/80 hover:bg-yellow-500/10 transition-colors"
           >
-            Rematch ⚡
+            <span className="flex items-center gap-1.5"><RefreshCw size={13} strokeWidth={2} /> Rematch</span>
           </motion.button>
           <motion.button
             onClick={handleReset}

@@ -1,0 +1,303 @@
+Looking at the screenshots carefully — the icons ARE one of the weak points. Let me break down exactly what I see:
+
+Icon Audit — What's Wrong
+LocationCurrentProblemFeature cards🐾 ⚔️ 🤖Too small, low contrast, blend into dark bgStats labels❤️ ⚡ 🍕 🔥 🏆 ⭐Emojis inconsistent across devicesNavigation footerText onlyNo visual iconsSolo/Battle tabs🎮 ✕Generic, not premiumShare buttonGeneric share iconWeakMood badgeEmoji onlyCould be richerLeaderboard ranks👑 🥈 🥉Good but could be more custom
+
+The Fix — Use Lucide React Icons Throughout
+Paste this to Replit Agent:
+
+Replace all icons throughout the entire VibeGotchi app with a consistent, premium icon system using Lucide React. The current mix of emojis and basic icons looks inconsistent across different devices and operating systems. Lucide icons are crisp, consistent, and look professional everywhere.
+INSTALL AND SETUP
+Lucide React is already installed in the project. Import icons like this:
+typescriptimport { 
+  Heart, Zap, Flame, Trophy, Star, 
+  Share2, Swords, Github, Home,
+  BarChart2, Users, Skull, Egg,
+  RefreshCw, Copy, Check, Volume2,
+  VolumeX, ChevronRight, ArrowLeft,
+  Sparkles, Shield, Crown, Wand2,
+  Activity, Clock, GitCommit, GitBranch
+} from 'lucide-react'
+FEATURE CARDS — LANDING PAGE
+Replace the current emoji icons with large Lucide icons in colored containers:
+Card 1 — "Evolves with commits":
+tsx<div className="icon-container" style={{
+  width: 48, height: 48,
+  background: 'rgba(0, 255, 136, 0.1)',
+  border: '1px solid rgba(0, 255, 136, 0.2)',
+  borderRadius: 12,
+  display: 'flex', alignItems: 'center', justifyContent: 'center'
+}}>
+  <GitCommit size={24} color="#00ff88" strokeWidth={1.5} />
+</div>
+Card 2 — "Battle other devs":
+tsx<div className="icon-container" style={{
+  background: 'rgba(255, 68, 68, 0.1)',
+  border: '1px solid rgba(255, 68, 68, 0.2)',
+  borderRadius: 12, ...
+}}>
+  <Swords size={24} color="#ff4444" strokeWidth={1.5} />
+</div>
+Card 3 — "AI reads your vibe":
+tsx<div className="icon-container" style={{
+  background: 'rgba(136, 68, 255, 0.1)',
+  border: '1px solid rgba(136, 68, 255, 0.2)',
+  borderRadius: 12, ...
+}}>
+  <Sparkles size={24} color="#8844ff" strokeWidth={1.5} />
+</div>
+Card icon container hover effect:
+css.icon-container {
+  transition: all 200ms ease;
+}
+.icon-container:hover {
+  transform: scale(1.1) rotate(5deg);
+  background: rgba(0, 255, 136, 0.2);
+}
+STATS PANEL ICONS
+Replace emoji labels with Lucide icons + text labels:
+Health stat:
+tsx<div className="stat-label-row">
+  <Heart size={14} color="#ff4466" fill="#ff4466" className="heartbeat-icon" />
+  <span className="stat-label">HEALTH</span>
+</div>
+Add CSS heartbeat animation:
+css.heartbeat-icon {
+  animation: heartbeat 1.2s ease-in-out infinite;
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.3); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.15); }
+  60% { transform: scale(1); }
+}
+Energy stat:
+tsx<Zap size={14} color="#ffdd00" fill="#ffdd00" className="zap-flicker" />
+css.zap-flicker {
+  animation: flicker 2s ease-in-out infinite;
+}
+@keyframes flicker {
+  0%, 90%, 100% { opacity: 1; }
+  92% { opacity: 0.4; }
+  96% { opacity: 0.8; }
+}
+Fed stat cell:
+tsx<GitCommit size={20} color="#ff8800" strokeWidth={1.5} />
+Streak stat cell:
+tsx<Flame size={20} color="#ff4400" strokeWidth={1.5} className="flame-flicker" />
+css.flame-flicker {
+  animation: flicker 1.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px rgba(255, 68, 0, 0.6));
+}
+Level stat cell:
+tsx<Trophy size={20} color="#ffaa00" strokeWidth={1.5} />
+Add shine animation on hover:
+css.trophy-icon:hover {
+  filter: drop-shadow(0 0 8px rgba(255, 170, 0, 0.8));
+  transform: rotate(-10deg) scale(1.1);
+  transition: all 200ms ease;
+}
+Stars stat cell:
+tsx<Star size={20} color="#0088ff" fill="#0088ff" className="star-twinkle" />
+css.star-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2) rotate(20deg); opacity: 0.8; }
+}
+Vibe section:
+tsx<Activity size={12} color="#00ff88" />
+<span>VIBE</span>
+Last commit indicator:
+tsx<Clock size={12} color="#666666" />
+<span>Last commit:</span>
+NAVIGATION AND UI ICONS
+Solo/Battle tab toggle:
+tsx// Solo tab
+<GitBranch size={14} color="currentColor" strokeWidth={2} />
+<span>Solo</span>
+
+// Battle tab  
+<Swords size={14} color="currentColor" strokeWidth={2} />
+<span>Battle</span>
+Share button:
+tsx// Default state
+<Share2 size={16} color="currentColor" strokeWidth={2} />
+<span>Share My Pet</span>
+
+// After clicking (2 second success state)
+<Check size={16} color="#00ff88" strokeWidth={2.5} />
+<span>Copied!</span>
+Search another username link:
+tsx<ArrowLeft size={14} color="currentColor" />
+<span>Search another username</span>
+View Leaderboard link:
+tsx<BarChart2 size={14} color="currentColor" />
+<span>View Leaderboard</span>
+<ChevronRight size={14} color="currentColor" />
+Sound toggle button:
+tsx// Sound on
+<Volume2 size={18} color="#666666" strokeWidth={1.5} />
+
+// Sound off
+<VolumeX size={18} color="#444444" strokeWidth={1.5} />
+Auto-refresh indicator:
+tsx<RefreshCw 
+  size={12} 
+  color="#444444" 
+  className={isRefreshing ? 'spin' : ''} 
+/>
+<span>Updated {timeAgo}</span>
+css.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+LEADERBOARD ICONS
+Page header:
+tsx<Crown size={28} color="#ffaa00" fill="#ffaa00" />
+<h1>Hall of Legends</h1>
+LIVE indicator:
+tsx<Activity size={12} color="#ff4444" className="live-pulse" />
+<span>LIVE</span>
+Rank badges:
+tsx// Rank 1
+<Crown size={20} color="#ffaa00" fill="#ffaa00" />
+
+// Rank 2
+<Shield size={20} color="#aaaaaa" fill="#aaaaaa" />
+
+// Rank 3  
+<Star size={20} color="#cd7f32" fill="#cd7f32" />
+
+// Rank 4+
+<span className="rank-number">#{rank}</span>
+Each leaderboard row:
+tsx<GitCommit size={12} color="#666" /> {level}
+<Flame size={12} color="#666" /> {mood}
+Back button:
+tsx<ArrowLeft size={16} color="currentColor" />
+<span>Back to VibeGotchi</span>
+Empty leaderboard state:
+tsx<Users size={48} color="#333333" strokeWidth={1} />
+<p>No pets summoned yet...</p>
+BATTLE MODE ICONS
+Fighter labels:
+tsx<Swords size={16} color="#ff4444" />
+<span>Fighter 1</span>
+VS divider:
+tsx// Large glowing VS with crossed swords
+<Swords size={32} color="#ffaa00" className="vs-pulse" />
+START BATTLE button:
+tsx<Flame size={18} color="currentColor" />
+<span>START BATTLE</span>
+<Flame size={18} color="currentColor" />
+Battle result winner:
+tsx<Crown size={24} color="#ffaa00" fill="#ffaa00" className="crown-bounce" />
+css@keyframes crown-bounce {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-8px) rotate(5deg); }
+}
+.crown-bounce {
+  animation: crown-bounce 1s ease-in-out infinite;
+}
+Stat comparison rows:
+tsx// Winning stat
+<Check size={14} color="#00ff88" strokeWidth={2.5} />
+
+// Losing stat
+<X size={14} color="#ff4444" strokeWidth={2.5} />
+Rematch button:
+tsx<RefreshCw size={16} color="currentColor" />
+<span>Rematch</span>
+FOOTER ICONS
+tsx<footer>
+  <span>VibeGotchi</span>
+  <span>No pets were harmed. Some developers were. 🐾</span>
+  <a href="https://github.com/Abdalla-kamfa/Vibe-Gotchi" target="_blank">
+    <Github size={16} color="#666666" strokeWidth={1.5} />
+  </a>
+</footer>
+ERROR STATE ICONS
+Username not found:
+tsx<Users size={48} color="#333333" strokeWidth={1} />
+<p>User not found</p>
+Rate limited:
+tsx<Clock size={48} color="#333333" strokeWidth={1} />
+<p>GitHub is being dramatic...</p>
+Network error:
+tsx<Activity size={48} color="#333333" strokeWidth={1} />
+<p>Connection issues...</p>
+MOOD BADGE ICONS
+Replace or supplement mood emoji with Lucide icons:
+tsx// In the zone
+<Flame size={14} color="#ff4400" /> 🔥 In the zone
+
+// Vibing
+<Zap size={14} color="#ffdd00" /> ⚡ Vibing
+
+// Getting rusty
+<Clock size={14} color="#ff8800" /> 😐 Getting rusty
+
+// Long nap
+<Activity size={14} color="#888888" /> 😴 Long nap
+
+// Please help
+<Skull size={14} color="#666666" /> 💀 Please help
+ICON CONSISTENCY RULES
+Apply these rules to EVERY icon in the app:
+Size scale:
+
+Navigation/small UI: 14px
+Stat labels: 14-16px
+Buttons: 16-18px
+Feature cards: 24px
+Empty states: 48px
+Hero/decorative: 28-32px
+
+Stroke width:
+
+All icons: strokeWidth={1.5} for elegant feel
+Bold/emphasis icons: strokeWidth={2}
+Very small icons: strokeWidth={2} (needs more weight)
+
+Color system:
+
+Green accent: #00ff88 — primary actions, health
+Red accent: #ff4444 — battle, danger, errors
+Yellow accent: #ffdd00 — energy, stars
+Orange accent: #ff8800 — streak, warning
+Gold accent: #ffaa00 — level, trophies, legend
+Purple accent: #8844ff — AI, vibe, magic
+Muted: #666666 — secondary, inactive
+Very muted: #444444 — disabled, placeholder
+
+Hover effects on all interactive icons:
+css.interactive-icon {
+  transition: all 150ms ease;
+}
+.interactive-icon:hover {
+  transform: scale(1.15);
+  filter: brightness(1.3);
+}
+Focus rings for accessibility:
+css.interactive-icon:focus-visible {
+  outline: 2px solid #00ff88;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+AFTER ALL CHANGES
+
+Verify NO raw emoji used for functional UI elements
+Emojis only allowed in: vibe quotes, mood text labels, easter egg, personality copy
+All Lucide icons crisp at all screen densities
+All animated icons smooth at 60fps
+Zero TypeScript errors
+Test on mobile — icons must be sharp on retina displays
+Push to GitHub
+Confirm Vercel deploys
+Screenshot all screens showing the new icon system

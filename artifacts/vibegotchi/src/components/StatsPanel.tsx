@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Heart, Zap, GitCommit, Flame, Trophy, Star, Activity, Clock } from "lucide-react";
 
 // ── Hooks ─────────────────────────────────────────────────────────────────────
 
@@ -157,17 +158,21 @@ function StatBar({ label, percent, delay = 0 }: StatBarProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             {isHealth ? (
-              <motion.span
+              <motion.div
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut", times: [0, 0.3, 1] }}
-                style={{ display: "inline-block", opacity: flicker ? 0.45 : 1 }}
-              >❤️</motion.span>
+                style={{ display: "flex", opacity: flicker ? 0.45 : 1 }}
+              >
+                <Heart size={14} color="#ff4466" fill="#ff4466" strokeWidth={0} />
+              </motion.div>
             ) : (
-              <motion.span
+              <motion.div
                 animate={{ opacity: [1, 0.55, 1, 0.8, 1] }}
                 transition={{ duration: 1.8, repeat: Infinity, times: [0, 0.2, 0.5, 0.7, 1] }}
-                style={{ display: "inline-block" }}
-              >⚡</motion.span>
+                style={{ display: "flex" }}
+              >
+                <Zap size={14} color="#ffdd00" fill="#ffdd00" strokeWidth={0} />
+              </motion.div>
             )}
             <span className="font-pixel text-[8px] text-white/60 tracking-wide">{label}</span>
           </div>
@@ -232,7 +237,7 @@ function LastCommitRow({ days, delay = 0 }: { days: number; delay?: number }) {
       transition={{ duration: 0.4, delay }}
       className="flex items-center gap-2 text-[11px] text-white/40"
     >
-      <span className="shrink-0">📅</span>
+      <Clock size={12} color="#666" className="shrink-0" />
       <span className="shrink-0 text-white/50">Last commit:</span>
       <span className="shrink-0 text-white/70 font-medium">{formatLastCommit(days)}</span>
       <div className="flex-1 h-px bg-white/[0.06] mx-1 hidden sm:block" />
@@ -263,7 +268,15 @@ function StatCell({ emoji, label, value, unit, accentColor, bgTint, bottomColor,
   const displayVal = useCountUp(value, 900, 300 + delay * 100);
   const [hovered, setHovered] = useState(false);
 
-  const displayEmoji = special === "dead" ? "💀" : emoji;
+  const CELL_ICONS: Record<string, React.ReactNode> = {
+    Fed:    <GitCommit size={20} color="#ff8800" strokeWidth={1.5} />,
+    Streak: <Flame     size={20} color="#ff4400" strokeWidth={1.5} />,
+    Level:  <Trophy    size={20} color="#ffaa00" strokeWidth={1.5} />,
+    Stars:  <Star      size={20} color="#0088ff" fill="#0088ff" strokeWidth={1.5} />,
+  };
+  const cellIcon = special === "dead"
+    ? <span className="text-xl leading-none">💀</span>
+    : (CELL_ICONS[label] ?? <span className="text-xl leading-none">{emoji}</span>);
 
   return (
     <Tooltip text={tooltip}>
@@ -284,8 +297,8 @@ function StatCell({ emoji, label, value, unit, accentColor, bgTint, bottomColor,
         }}
       >
         <div className="flex items-start justify-between">
-          <motion.span
-            className="text-lg sm:text-xl leading-none"
+          <motion.div
+            className="leading-none flex items-center"
             animate={
               label === "Streak" ? { opacity: [1, 0.5, 1] } :
               label === "Stars"  ? { scale: [1, 1.18, 1] }  : {}
@@ -294,7 +307,7 @@ function StatCell({ emoji, label, value, unit, accentColor, bgTint, bottomColor,
               label === "Streak" ? { duration: 1.4, repeat: Infinity } :
               label === "Stars"  ? { duration: 2.5, repeat: Infinity, ease: "easeInOut" } : {}
             }
-          >{displayEmoji}</motion.span>
+          >{cellIcon}</motion.div>
           <span className="font-pixel text-[7px] tracking-wide" style={{ color: `${accentColor}bb` }}>{label.toUpperCase()}</span>
         </div>
 
@@ -351,7 +364,10 @@ function VibeSection({ oneLiner, personality, isAI, delay = 0 }: { oneLiner: str
         }}
       >
         <div className="flex items-center justify-between mb-2.5">
-          <span className="font-pixel text-[7px] text-[--neon-green]/60 tracking-widest">💬 VIBE</span>
+          <div className="flex items-center gap-1.5">
+            <Activity size={11} color="rgba(0,255,136,0.55)" />
+            <span className="font-pixel text-[7px] text-[--neon-green]/60 tracking-widest">VIBE</span>
+          </div>
           <span className="text-[10px] text-white/30">
             {isAI ? "✨ analyzed by AI" : "⚙️ rule-based"}
           </span>
