@@ -8,6 +8,23 @@ export interface GitHubPetData {
   totalStars: number;
   recentCommitMessages: string[];
   totalRepos: number;
+  fromCache?: boolean;
+}
+
+const CACHE_TTL_MS = 5 * 60 * 1000;
+
+function getCachedData(key: string): GitHubPetData | null {
+  try {
+    const raw = sessionStorage.getItem(`vg_${key}`);
+    if (!raw) return null;
+    const { data, ts } = JSON.parse(raw) as { data: GitHubPetData; ts: number };
+    if (Date.now() - ts > CACHE_TTL_MS) { sessionStorage.removeItem(`vg_${key}`); return null; }
+    return data;
+  } catch { return null; }
+}
+
+function setCachedData(key: string, data: GitHubPetData): void {
+  try { sessionStorage.setItem(`vg_${key}`, JSON.stringify({ data, ts: Date.now() })); } catch {}
 }
 
 interface GHCommit {
@@ -52,6 +69,10 @@ export async function fetchGitHubPetData(
   username: string,
   signal?: AbortSignal
 ): Promise<GitHubPetData> {
+  const cacheKey = username.toLowerCase();
+  const cached = getCachedData(cacheKey);
+  if (cached) return { ...cached, fromCache: true };
+
   const headers = buildHeaders();
   const opts: RequestInit = { headers, signal };
 
@@ -154,7 +175,7 @@ export async function fetchGitHubPetData(
   void commitsThisWeek;
   void commitsLastWeek;
 
-  return {
+  const result: GitHubPetData = {
     username: user.login,
     commitCount30Days,
     lastCommitDate,
@@ -165,4 +186,6 @@ export async function fetchGitHubPetData(
     recentCommitMessages,
     totalRepos: user.public_repos ?? 0,
   };
+  setCachedData(cacheKey, result);
+  return result;
 }

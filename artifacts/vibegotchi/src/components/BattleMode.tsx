@@ -118,6 +118,14 @@ function BattlePetCard({ pet, isWinner, isTie, showResult }: BattlePetCardProps)
   );
 }
 
+const BATTLE_LOADING_MSGS = [
+  "Analyzing commit history...",
+  "Calculating battle power...",
+  "Consulting the git gods...",
+  "Summoning Stack Overflow spirits...",
+  "Counting caffeine-to-commit ratio...",
+];
+
 export function BattleMode() {
   const [username1, setUsername1] = useState("");
   const [username2, setUsername2] = useState("");
@@ -127,6 +135,7 @@ export function BattleMode() {
   const [errorMsg, setErrorMsg] = useState("");
   const [showResult, setShowResult] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
 
   const bothFilled = username1.trim().length > 0 && username2.trim().length > 0;
 
@@ -181,6 +190,13 @@ export function BattleMode() {
       document.title = "⚔️ Battle Result — VibeGotchi 🐾";
     }
     return () => { document.title = "VibeGotchi 🐾"; };
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase !== "loading") return;
+    setLoadingMsgIdx(0);
+    const id = setInterval(() => setLoadingMsgIdx(i => (i + 1) % BATTLE_LOADING_MSGS.length), 900);
+    return () => clearInterval(id);
   }, [phase]);
 
   function handleReset() {
@@ -314,8 +330,18 @@ export function BattleMode() {
             className="text-5xl sm:text-6xl"
           >🥚</motion.div>
         </div>
-        <p className="font-pixel text-[9px] text-white/50 tracking-widest">LOADING FIGHTERS...</p>
-        <p className="text-xs text-white/30">Calculating who needs to touch grass...</p>
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={loadingMsgIdx}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.2 }}
+            className="font-pixel text-[9px] text-white/50 tracking-widest"
+          >
+            {BATTLE_LOADING_MSGS[loadingMsgIdx].toUpperCase()}
+          </motion.p>
+        </AnimatePresence>
       </div>
     );
   }
@@ -331,11 +357,15 @@ export function BattleMode() {
     const h1 = getHealthPercent(pet1.data.daysSinceLastCommit);
     const h2 = getHealthPercent(pet2.data.daysSinceLastCommit);
     const commitDiff = Math.abs(pet1.data.commitCount30Days - pet2.data.commitCount30Days);
-    const battleCry = tie
-      ? "DEAD HEAT. Both developers need to touch grass."
-      : commitDiff > 20
-      ? `It wasn't even close. ${winner!.username} commits in their sleep.`
-      : `A nail-biter! ${winner!.username} wins by ${commitDiff} commit${commitDiff !== 1 ? "s" : ""}.`;
+    const w = winner?.username ?? "", l = loser?.username ?? "";
+    const battleCry = (() => {
+      if (tie) return "DEAD HEAT. Both developers need to touch grass immediately.";
+      if (commitDiff > 100) return `${w} didn't come to play. ${l} came to watch.`;
+      if (commitDiff > 50) return `${w} wins decisively. ${l} needs a keyboard intervention.`;
+      if (commitDiff > 20) return `${w} edges it out. ${l} put up a fight though.`;
+      if (commitDiff > 5) return `Nail-biter! ${w} wins by ${commitDiff} commit${commitDiff !== 1 ? "s" : ""}. Respect.`;
+      return `${w} squeaks through. ${l} gets a participation trophy.`;
+    })();
 
     return (
       <div className="w-full max-w-2xl flex flex-col gap-5">

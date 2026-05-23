@@ -479,6 +479,44 @@
 .roast-badge { animation: roast-pulse 2s ease-in-out infinite; }
 
 /* ── Reduced motion: disable non-essential animations ── */
+/* Input shake */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-7px); }
+  30%       { transform: translateX(7px); }
+  45%       { transform: translateX(-5px); }
+  60%       { transform: translateX(5px); }
+  75%       { transform: translateX(-2px); }
+  90%       { transform: translateX(2px); }
+}
+.shake { animation: shake 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+
+/* Live counter dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.6); }
+}
+
+/* Shooting stars */
+@keyframes shooting-star-anim {
+  0%        { opacity: 0; transform: translate(0, 0) rotate(35deg); }
+  3%        { opacity: 0.85; }
+  15%, 100% { opacity: 0; transform: translate(160vw, 160vh) rotate(35deg); }
+}
+.shooting-star {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1.5px;
+  height: 90px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.88) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  animation: shooting-star-anim linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

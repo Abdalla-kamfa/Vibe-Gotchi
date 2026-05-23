@@ -59,6 +59,27 @@ const DUST = Array.from({ length: 30 }, (_, i) => ({
   dur: 9 + (i * 0.83) % 12,
 }));
 
+const SHOOTING_STARS = [
+  { top: "8%",  left: "12%",  dur: "8s",   delay: "0s"    },
+  { top: "4%",  left: "58%",  dur: "11s",  delay: "3.5s"  },
+  { top: "18%", left: "28%",  dur: "14s",  delay: "7.2s"  },
+  { top: "11%", left: "80%",  dur: "9.5s", delay: "1.8s"  },
+  { top: "24%", left: "44%",  dur: "12s",  delay: "5.5s"  },
+];
+
+const ROASTS = [
+  "No GitHub account? So you're the 'ideas person'. Respect.",
+  "Clean commit history means nothing to commit. Poetic.",
+  "Your GitHub is empty. Your potential is not. Probably.",
+  "Zero repos. Maximum confidence. We love that for you.",
+  "You're not a developer. You're a developer's friend. Important role.",
+  "No commits? Just vibes? Bold strategy. Let's see how it plays out.",
+  "Your strongest framework is enthusiasm. Ship it.",
+  "The best code is no code. You've mastered this.",
+  "Legend has it you once opened a terminal. Unconfirmed.",
+  "You're full-stack in the spiritual sense. Respect the hustle.",
+];
+
 function BackgroundEffects() {
   return (
     <>
@@ -79,6 +100,13 @@ function BackgroundEffects() {
             style={{ left: `${d.x}%`, bottom: "-2%", width: 2, height: 2, backgroundColor: "rgba(57,255,20,0.35)" }}
             animate={{ y: [0, -1100], opacity: [0, 0.7, 0.5, 0] }}
             transition={{ duration: d.dur, repeat: Infinity, delay: d.delay, ease: "linear", times: [0, 0.08, 0.88, 1] }}
+          />
+        ))}
+        {SHOOTING_STARS.map((ss, i) => (
+          <div
+            key={`ss-${i}`}
+            className="shooting-star"
+            style={{ top: ss.top, left: ss.left, animationDuration: ss.dur, animationDelay: ss.delay }}
           />
         ))}
       </div>
@@ -142,6 +170,10 @@ export default function Home() {
   const [petCount, setPetCount] = useState<number>(() => {
     try { return parseInt(localStorage.getItem("vg_summon_count") ?? "1247", 10) || 1247; } catch { return 1247; }
   });
+  const [shakeInput, setShakeInput]     = useState(false);
+  const [roastIdx, setRoastIdx]         = useState(0);
+  const [roastVisible, setRoastVisible] = useState(true);
+  const [fromCache, setFromCache]       = useState(false);
 
   function handleToggleMute() {
     const nowMuted = sounds.toggle();
@@ -208,6 +240,32 @@ export default function Home() {
     return () => window.removeEventListener("keydown", onKey);
   }, [phase]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Counter auto-increment (live feel)
+  useEffect(() => {
+    let tid: ReturnType<typeof setTimeout>;
+    function tick() {
+      setPetCount(c => {
+        const n = c + 1;
+        try { localStorage.setItem("vg_summon_count", String(n)); } catch {}
+        return n;
+      });
+      tid = setTimeout(tick, 7000 + Math.random() * 9000);
+    }
+    tid = setTimeout(tick, 7000 + Math.random() * 9000);
+    return () => clearTimeout(tid);
+  }, []);
+
+  // Roast text cycling
+  useEffect(() => {
+    if (phase !== "roast") return;
+    setRoastIdx(0); setRoastVisible(true);
+    const id = setInterval(() => {
+      setRoastVisible(false);
+      setTimeout(() => { setRoastIdx(i => (i + 1) % ROASTS.length); setRoastVisible(true); }, 380);
+    }, 3500);
+    return () => clearInterval(id);
+  }, [phase]);
+
   // Silent background refresh every 30 seconds while on result screen
   const silentRefresh = useCallback(async (user: string) => {
     setIsRefreshing(true);
@@ -262,6 +320,7 @@ export default function Home() {
 
     try {
       const data = await fetchGitHubPetData(u);
+      setFromCache(data.fromCache === true);
       setPetData(data);
 
       const vibe = await analyzeVibe(
@@ -303,7 +362,12 @@ export default function Home() {
   const handleSummon = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = username.trim();
-    if (!trimmed || isSubmitting.current) return;
+    if (!trimmed) {
+      setShakeInput(true);
+      setTimeout(() => setShakeInput(false), 500);
+      return;
+    }
+    if (isSubmitting.current) return;
     isSubmitting.current = true;
     inputRef.current?.blur(); // dismiss mobile keyboard
     sounds.click();
@@ -337,6 +401,7 @@ export default function Home() {
     setVibeResult(null);
     setError(null);
     setPetName("");
+    setFromCache(false);
   }
 
   const commitWarning = petData?.commitCount30Days === 0
@@ -389,9 +454,13 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="relative z-10 text-xs text-white/30"
+          className="relative z-10 text-xs text-white/30 flex items-center justify-center gap-1.5"
         >
-          🐾{" "}
+          <span
+            className="inline-block w-1.5 h-1.5 rounded-full bg-[--neon-green] shrink-0"
+            style={{ animation: "pulse-dot 1.6s ease-in-out infinite" }}
+            aria-hidden="true"
+          />
           <motion.span
             key={petCount}
             initial={{ scale: 1.4, color: "#39ff14" }}
@@ -470,17 +539,35 @@ export default function Home() {
             className="relative w-full max-w-lg flex flex-col items-center gap-5"
           >
             <form onSubmit={handleSummon} className="w-full flex flex-col gap-3">
-              <input
-                ref={inputRef}
-                data-testid="input-username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter any GitHub username..."
-                className="input-summon w-full px-5 py-4 min-h-[56px] rounded-2xl bg-white/[0.06] border border-white/10 text-white placeholder-white/25 text-base outline-none transition-all"
-                autoComplete="off"
-                spellCheck={false}
-              />
+              <div className={`relative w-full${shakeInput ? " shake" : ""}`}>
+                <input
+                  ref={inputRef}
+                  data-testid="input-username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Enter any GitHub username..."
+                  className="input-summon w-full px-5 py-4 pr-12 min-h-[56px] rounded-2xl bg-white/[0.06] border border-white/10 text-white placeholder-white/25 text-base outline-none transition-all"
+                  autoComplete="off"
+                  spellCheck={false}
+                />
+                <AnimatePresence>
+                  {username && (
+                    <motion.button
+                      type="button"
+                      initial={{ opacity: 0, scale: 0.7 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.7 }}
+                      transition={{ duration: 0.12 }}
+                      onClick={() => { setUsername(""); inputRef.current?.focus(); }}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center text-white/30 hover:text-white/80 hover:bg-white/10 transition-all text-sm"
+                      aria-label="Clear input"
+                    >
+                      ✕
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+              </div>
               <motion.button
                 data-testid="button-summon"
                 type="submit"
@@ -619,23 +706,36 @@ export default function Home() {
               💀
             </motion.div>
 
-            <div className="roast-badge glass rounded-2xl p-6 border border-red-500/20 bg-red-500/[0.04] w-full">
-              <p className="font-pixel text-[9px] text-red-400 tracking-widest mb-4">
-                🔥 ROAST INCOMING
+            <div className="roast-badge glass rounded-2xl p-6 border border-red-500/20 bg-red-500/[0.04] w-full min-h-[130px] flex flex-col justify-between gap-3">
+              <p className="font-pixel text-[9px] text-red-400 tracking-widest">
+                💀 ROAST MODE ACTIVATED
               </p>
-              <p className="text-sm text-white/80 leading-relaxed">
-                No GitHub account? So you're the person who says{" "}
-                <span className="text-white/95 font-semibold italic">"I know how to code"</span>{" "}
-                at parties.
-              </p>
-              <p className="text-sm text-white/65 leading-relaxed mt-3">
-                Respect the hustle. Now go make a repo. 💀
-              </p>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={roastIdx}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: roastVisible ? 1 : 0, y: roastVisible ? 0 : -8 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.35 }}
+                  className="text-sm text-white/85 leading-relaxed"
+                >
+                  {ROASTS[roastIdx]}
+                </motion.p>
+              </AnimatePresence>
+              <div className="flex justify-center gap-1.5 mt-1">
+                {ROASTS.map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                    style={{ background: i === roastIdx ? "rgba(239,68,68,0.85)" : "rgba(255,255,255,0.15)" }}
+                  />
+                ))}
+              </div>
             </div>
 
             <motion.button
               onClick={async () => {
-                try { await navigator.clipboard.writeText("I got roasted by VibeGotchi 💀 vibegotchi.app"); } catch {}
+                try { await navigator.clipboard.writeText("VibeGotchi just roasted me and I deserved it 💀 vibegotchi.app"); } catch {}
                 sounds.sharePop();
               }}
               whileHover={{ scale: 1.03 }}
@@ -649,7 +749,7 @@ export default function Home() {
               onClick={handleReset}
               className="text-xs text-white/25 hover:text-white/55 transition-colors"
             >
-              Try a real username →
+              I'll go commit something →
             </button>
           </motion.div>
         )}

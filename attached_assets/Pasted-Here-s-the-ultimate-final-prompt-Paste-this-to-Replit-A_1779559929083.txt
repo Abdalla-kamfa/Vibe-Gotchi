@@ -1,0 +1,412 @@
+Here's the ultimate final prompt. Paste this to Replit Agent:
+
+This is the final push before competition judging on Monday. We need to go from 9.4/10 to beyond perfect. Execute every single item below with zero shortcuts.
+1. OPENAI — FIX COMPLETELY
+The AI vibe feature is our strongest differentiator. It must work perfectly every time.
+Fix the API route:
+typescript// In the API route, add these headers and timeout:
+const controller = new AbortController()
+const timeout = setTimeout(() => controller.abort(), 8000)
+
+try {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    signal: controller.signal,
+    headers: {
+      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      max_tokens: 150,
+      temperature: 0.9,
+      messages: [...]
+    })
+  })
+  clearTimeout(timeout)
+} catch {
+  clearTimeout(timeout)
+  return fallbackVibe()
+}
+Expand fallback array to 30 unique lines:
+typescriptconst FALLBACK_VIBES = [
+  "Commits at 2am and calls it 'minor fixes'",
+  "Git history reads like a crime novel",
+  "Force pushes to main with zero regrets",
+  "Opens 12 Stack Overflow tabs simultaneously",
+  "README? Never heard of her",
+  "WIP commits are a personality trait",
+  "Closes issues by deleting the repo",
+  "Ship first. Fix never. Retire rich.",
+  "Variable names are a creative outlet",
+  "Merge conflicts are a daily ritual",
+  "Comments code with passive aggression",
+  "Lives on main branch like a warrior",
+  "npm install is a spiritual practice",
+  "Debugging by adding console.log everywhere",
+  "Types fast, thinks faster, documents never",
+  "Git blame reveals deep personal truths",
+  "Refactors code instead of fixing bugs",
+  "Tests are for people who doubt themselves",
+  "Deploys on Fridays unironically",
+  "Writes perfect code on the first try (lies)",
+  "Stack Overflow is basically a co-founder",
+  "Coffee intake directly correlates to commits",
+  "Closes tabs by closing the whole laptop",
+  "Estimates tasks in dog years",
+  "The diff is the documentation",
+  "Production is just a staging environment",
+  "Commits with 'fix' 47 times in a row",
+  "The bug was a feature all along",
+  "Pushes empty commits to look active",
+  "Has strong opinions about tabs vs spaces"
+]
+Fallback personality words:
+typescriptconst FALLBACK_PERSONALITIES = {
+  legend: "LEGENDARY",
+  adult: "DISCIPLINED", 
+  teen: "CAFFEINATED",
+  baby: "CHAOTIC",
+  egg: "GHOST"
+}
+
+2. MOBILE — TEST AND FIX EVERY SCREEN
+Open Chrome DevTools and test EVERY screen at these exact sizes. Fix every single issue:
+375px (iPhone SE/14) — most common judge device:
+Landing page:
+
+Title must fit on ONE line or break beautifully
+Chips (@torvalds etc) must wrap without overflowing
+Feature cards must stack single column
+No content cut off on right side
+Summon button full width with 16px padding each side
+
+Pet screen at 375px:
+
+Pet sprite: exactly 180px × 180px centered
+Username centered above pet
+Mood badge centered below pet
+Stats panel: 2 column grid, full width
+Share button: full width, 48px tall
+"Search another username" link visible without scrolling
+
+Battle mode at 375px:
+
+Two input fields stacked vertically
+VS badge large and centered between them
+START BATTLE button full width
+Battle result: pets stacked vertically (Fighter 1 top, VS middle, Fighter 2 bottom)
+Winner banner full width
+
+Leaderboard at 375px:
+
+Each row: avatar + username + level visible
+No text overflow
+Rank badge visible
+Rows not cramped
+
+768px (iPad):
+
+Landing: feature cards 3 column
+Pet screen: side by side layout
+Battle: side by side
+Leaderboard: wider rows with more info
+
+1440px (desktop):
+
+Everything centered with max-width
+No stretching to full width
+Generous whitespace
+
+
+3. PERFORMANCE — MAKE IT FEEL INSTANT
+Add skeleton loaders:
+When GitHub data is loading, show exact skeleton shapes matching the final layout:
+
+Pet area: circular skeleton pulse animation
+Stats panel: rectangular skeleton bars
+Username: short skeleton line
+Mood: small skeleton pill
+All skeletons: dark background with shimmer animation
+
+Optimize GitHub API calls:
+
+Make all 3 GitHub API calls in parallel using Promise.all
+Cache results in sessionStorage for 5 minutes with username as key
+If same username searched twice, serve from cache instantly
+Show "⚡ Loaded from cache" indicator when using cached data
+
+Add request deduplication:
+
+If user clicks Summon twice quickly, only make one request
+Ignore subsequent requests while one is in flight
+
+
+4. PET SPRITE — MAKE IT MORE ALIVE
+The pet needs to feel like a living creature, not a CSS shape.
+Enhance each stage:
+Egg/Ghost (0 commits):
+
+Greyscale filter on entire pet
+Slow flickering opacity: 1 → 0.6 → 1, 2 second loop
+Red vignette shadow around pet card
+Skull emoji orbiting slowly
+Eyes are X marks that occasionally glitch
+
+Baby (1-5 commits):
+
+Small, soft, round
+Excited quick bounce: faster animation speed
+Large curious dot eyes that look left and right
+Occasional star sparkle appears above head
+
+Teen (6-20 commits):
+
+Medium size, slightly angular
+Energetic fast bounce
+Determined squinted eyes
+Occasional lightning bolt appears
+
+Adult (21-50 commits):
+
+Full size, confident
+Slow powerful pulse glow
+Steady confident eyes
+Aura glow around entire pet
+
+Legend (51+ commits):
+
+Maximum size
+Golden particle ring orbiting (4 stars, rotating)
+Rainbow glow cycles on pet body
+Crown accessory with shimmer
+Occasional burst of sparkles
+Eyes glow with inner light
+
+All pets:
+
+Blink every 3-4 seconds (eyes close for 150ms then open)
+Breathe: scale 1.0 → 1.015 → 1.0 every 3 seconds
+React to mouse hover: pet looks toward cursor
+Tap/click on pet: pet does a happy jump animation
+
+
+5. STATS PANEL — MAKE IT PREMIUM
+Visual upgrades:
+
+Panel background: rgba(255,255,255,0.02) with backdrop-filter: blur(20px)
+Border: 1px solid rgba(255,255,255,0.06) with subtle language-color glow
+Corner radius: 20px
+Inner padding: 24px desktop, 16px mobile
+
+Each stat cell:
+
+Subtle colored background tint per stat type
+Stat label in Press Start 2P at 8px
+Stat value in Inter Bold at 18-20px
+Hover: cell brightens slightly
+Tooltip on hover explaining the stat
+
+Progress bars (Health + Energy):
+
+Height: 8px, rounded ends
+Background: rgba(255,255,255,0.1)
+Fill: animated gradient
+After fill animation: shimmer sweep repeats every 4 seconds
+Health bar: gradient from red → orange based on value
+Energy bar: gradient from yellow → green based on value
+
+Level display:
+
+Large prominent number
+Color: grey (0-10), green (11-30), blue (31-50), purple (51-80), gold (81+)
+Small "LV." prefix in pixel font
+
+Vibe line:
+
+Full width below grid
+Italic, slightly larger than other text
+Opening quote mark styled large in muted green
+Subtle border-left green accent
+
+
+6. LANDING PAGE — FINAL TOUCHES
+Above the fold must be perfect:
+Everything a judge needs to understand and try the app must be visible without scrolling on any device.
+
+Title + tagline + counter + tabs + input + button + chips = all above fold on 375px
+Feature cards can be below fold (they scroll to discover)
+
+Animated background enhancement:
+
+Current stars are good — add 5 larger "shooting stars" that streak across occasionally
+Every 8-10 seconds a shooting star animation plays
+CSS only, no JavaScript needed
+
+Input enhancement:
+
+Add a small GitHub logo icon inside the input field on the left
+When input has text: show a small X button to clear it
+Smooth transitions on all input states
+
+Counter enhancement:
+
+Make "1,248 pets summoned" increment by 1 every few seconds (fake but fun)
+Add a subtle green dot that pulses next to it (like a live indicator)
+
+
+7. BATTLE MODE — CINEMATIC UPGRADE
+Pre-battle anticipation:
+
+When both inputs filled: show preview avatars from GitHub
+(https://github.com/username.png?size=40)
+Small avatars appear next to input fields
+"⚔️ Ready to Battle" indicator glows green
+
+Battle loading — make it dramatic:
+
+Both eggs appear and shake for 1.5 seconds
+VS in the middle pulses and grows
+Loading messages alternate:
+
+"Analyzing commit history..."
+"Calculating battle power..."
+"Consulting the git gods..."
+
+
+
+Battle result — cinematic sequence:
+
+Step 1 (0ms): Both pets appear simultaneously
+Step 2 (500ms): Stats start comparing one by one with tick sounds
+Step 3 (1500ms): Winner glow explodes
+Step 4 (2000ms): Winner crown drops from above with bounce
+Step 5 (2500ms): Battle cry appears with typewriter effect
+Step 6 (3000ms): Share and Rematch buttons fade in
+
+Battle cry examples:
+typescriptconst getBattleCry = (winner, loser, diff) => {
+  if (diff > 100) return `${winner} didn't come to play. ${loser} came to watch.`
+  if (diff > 50) return `${winner} wins decisively. ${loser} needs a keyboard intervention.`
+  if (diff > 20) return `${winner} edges it out. ${loser} put up a fight though.`
+  if (diff > 5) return `Nail-biter! ${winner} wins by ${diff} commits. Respect to both.`
+  if (diff === 0) return `DEAD HEAT. Both need to touch grass immediately.`
+  return `${winner} squeaks through. ${loser} gets a participation trophy.`
+}
+
+8. LEADERBOARD — HALL OF LEGENDS UPGRADE
+Top 3 special treatment:
+#1 — Full golden row background glow, 👑 crown, larger text, subtle sparkle animation
+#2 — Silver glow, 🥈 medal
+#3 — Bronze glow, 🥉 medal  
+#4+ — Standard dark rows
+Each row shows:
+
+Rank badge
+GitHub avatar (circular, 36px)
+Username (bold)
+Pet name (muted, smaller)
+Stage badge (color coded pill)
+Level (prominent number)
+Mood emoji
+Vibe line (truncated, italic)
+
+Clicking any row:
+
+Navigates to home page
+Auto-fills that username
+Auto-submits immediately
+Smooth transition
+
+Live feel:
+
+LIVE indicator blinks red in top right
+"Updated just now" timestamp
+Row entrance: slide from right, staggered
+
+
+9. EASTER EGG — ROAST MODE UPGRADE
+When user types roastme:
+Screen:
+
+Skip GitHub API entirely
+Show a special dark red tinted screen
+Large crying laughing skull pet bouncing
+Title: "YOU ASKED FOR THIS 💀"
+Roast text cycles through 10 roasts with typewriter effect:
+
+"No GitHub account? So you're the 'ideas person'. Respect."
+"Clean commit history means nothing to commit. Poetic."
+"Your GitHub is empty. Your potential is not. Probably."
+"Zero repos. Maximum confidence. We love that for you."
+"You're not a developer. You're a developer's friend. Important role."
+
+
+Every 3 seconds a new roast appears
+Share button: copies "VibeGotchi just roasted me and I deserved it 💀 vibegotchi.vercel.app"
+Small "I'll go commit something" button that returns to home
+
+
+10. MICRO DETAILS THAT WIN COMPETITIONS
+These tiny things separate good from unforgettable:
+1. Favicon — Add a proper favicon. Create a simple green pixel pet emoji as favicon.ico
+2. OG Image — Make sure og:image actually works. Create a beautiful dark 1200×630 image with VibeGotchi title and a sample legend pet
+3. PWA ready — Add manifest.json so judges can "install" it on their phone home screen:
+json{
+  "name": "VibeGotchi",
+  "short_name": "VibeGotchi",
+  "description": "Your GitHub commits. Your creature.",
+  "theme_color": "#0a0a0f",
+  "background_color": "#0a0a0f",
+  "display": "standalone",
+  "icons": [{"src": "/icon.png", "sizes": "192x192"}]
+}
+4. Empty input protection — if user clears input and tries to submit: input shakes (CSS shake animation) instead of submitting
+5. Success toast — When share button clicked: beautiful toast notification slides in from bottom: "Copied to clipboard! Go flex. 💚"
+6. Transition between screens — Add page transition: current screen fades out, new screen fades in. 200ms. Makes it feel like a native app.
+7. Pull to refresh on mobile — On the pet screen, pull down to refresh the data manually
+8. Long press on pet — On mobile, long press the pet sprite to get a "pet info" tooltip showing all stats in a popup
+9. Keyboard navigation — All interactive elements reachable by Tab key with visible focus rings
+10. Zero layout shift — Reserve space for pet image before it loads so stats panel doesn't jump when pet appears
+
+FINAL VERIFICATION SEQUENCE
+After ALL changes are complete, do this exact sequence:
+Test 1 — Judge simulation desktop:
+
+Open vibegotchi.vercel.app fresh (incognito)
+Click @torvalds chip
+Verify legend pet loads with golden effects
+Check AI vibe line appears (or fallback)
+Click Share — verify clipboard works
+Go to leaderboard — verify torvalds is #1
+Come back, click Battle tab
+Type torvalds vs sindresorhus
+Start battle — verify cinematic sequence
+Type roastme — verify easter egg
+
+Test 2 — Judge simulation mobile (375px DevTools):
+Repeat entire Test 1 sequence at 375px width.
+Every step must work identically.
+Test 3 — Edge cases:
+
+Type a nonexistent username → friendly error
+Type roastme → easter egg
+Type same username twice in battle → funny message
+Leave page open 30 seconds → auto refresh fires
+Click summon with empty input → shake animation
+
+Test 4 — Performance:
+
+Open DevTools → Network tab
+Hard refresh
+Time to first pet appearance must be under 3 seconds on fast connection
+No console errors or warnings
+
+After all tests pass:
+
+Run TypeScript check — zero errors
+Push to GitHub
+Confirm Vercel auto-deploys successfully
+Verify https://vibegotchi.vercel.app loads correctly
+Screenshot all screens and show me results
+
+This is the final version. Make it perfect. 🏆
