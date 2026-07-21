@@ -17,7 +17,7 @@ VibeGotchi turns your GitHub activity into a living virtual pet.
 Ship code and it thrives. Ghost your repos and it dies.
 No login. No signup. Just paste a username.
 
-Built in 24 hours for the Dollar Vibe Club Open Build Sprint — May 2026.
+
 
 ---
 
@@ -106,41 +106,8 @@ Type `roastme` as the username for a surprise 👀
 | Deployment | Vercel |
 | Storage | localStorage |
 
----
-
-## Running Locally
-
-```bash
-git clone https://github.com/Abdalla-kamfa/Vibe-Gotchi.git
-cd Vibe-Gotchi/artifacts/vibegotchi
-npm install
-cp .env.example .env
-# Add OPENAI_API_KEY to .env
-npm run dev
-```
-
----
-
-## Environment Variables
-
-```env
-OPENAI_API_KEY=sk-...
-GITHUB_TOKEN=ghp_...optional for higher rate limits
-```
-
----
-
-## Built For
-
-**Dollar Vibe Club — 24 Hour Open Build Sprint**
-May 23-24, 2026
-
----
 
 ## License
 MIT
 
 ---
-
-*No pets were harmed in the making of this app.*
-*Some developers were. 🐾*
